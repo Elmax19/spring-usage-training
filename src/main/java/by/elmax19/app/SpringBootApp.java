@@ -1,4 +1,4 @@
-package com.itechart.springusagetraining;
+package by.elmax19.app;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
