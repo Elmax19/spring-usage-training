@@ -8,6 +8,7 @@ class SpringBootAppTests {
 
 	@Test
 	void contextLoads() {
+		System.out.println("Context loading test");
 	}
 
 }
