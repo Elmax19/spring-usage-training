@@ -1,10 +1,10 @@
-package com.itechart.springusagetraining;
+package by.elmax19.spring_boot_app;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class SpringUsageTrainingApplicationTests {
+class SpringBootAppTests {
 
 	@Test
 	void contextLoads() {
