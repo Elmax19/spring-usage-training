@@ -1,5 +1,6 @@
 package by.elmax19.app.bean;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 public class MyAnnotatedBean {
@@ -7,8 +8,9 @@ public class MyAnnotatedBean {
         System.out.println("Annotated bean Initialization.");
     }
 
-    public void action() {
-        System.out.println("Some Actions with Annotated bean.");
+    @PostConstruct
+    public void postConstruct(){
+        System.out.println("Annotated bean post Construction.");
     }
 
     @PreDestroy

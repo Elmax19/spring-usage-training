@@ -5,7 +5,7 @@ public class MyBean {
 
     public MyBean(String actionMessage) {
         this.actionMessage = actionMessage;
-        System.out.println(actionMessage);
+        System.out.println(this.actionMessage);
     }
 
     public void setActionMessage(String actionMessage) {
@@ -15,10 +15,6 @@ public class MyBean {
 
     public void init() {
         System.out.println("Bean Initialization.");
-    }
-
-    public void process() {
-        System.out.println(actionMessage);
     }
 
     public void destroy() {
