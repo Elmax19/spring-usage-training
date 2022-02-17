@@ -5,7 +5,7 @@
     <bean id="myBean" class="by.elmax19.app.bean.MyBean"
           init-method="init"
           destroy-method="destroy">
-        <constructor-arg value="Using bean Constructor."/>
+        <constructor-arg value="-MyBean-: Constructor invoked."/>
         <property name="actionMessage" value="Some Actions with bean."/>
     </bean>
 </beans>

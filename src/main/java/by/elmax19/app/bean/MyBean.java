@@ -10,14 +10,14 @@ public class MyBean {
 
     public void setActionMessage(String actionMessage) {
         this.actionMessage = actionMessage;
-        System.out.println("Message Setter invoked.");
+        System.out.println("-MyBean-: Message Setter invoked.");
     }
 
     public void init() {
-        System.out.println("Bean Initialization.");
+        System.out.println("-MyBean-: Initialization.");
     }
 
     public void destroy() {
-        System.out.println("Bean Destruction.");
+        System.out.println("-MyBean-: Destruction.");
     }
 }
