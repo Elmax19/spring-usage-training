@@ -14,7 +14,7 @@ public class MyBean {
     }
 
     public void init() {
-        System.out.println("Bean Initialisation.");
+        System.out.println("Bean Initialization.");
     }
 
     public void process() {

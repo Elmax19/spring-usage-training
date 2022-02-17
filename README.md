@@ -26,8 +26,12 @@ container.
 
 In XML, this behavior is controlled by the _**lazy-init**_ attribute on the _**<bean/>**_ element
 
+Creating Spring beans generally used with _**@Configuration**_. We use _**@Bean**_ at method level.
+
 ## Useful links:
 
 - https://docs.spring.io/spring-framework/docs/current/reference/html/core.html#beans-introduction
 - https://www.geeksforgeeks.org/bean-life-cycle-in-java-spring
 - https://www.tutorialspoint.com/spring/spring_bean_life_cycle.htm
+- https://javatechonline.com/spring-boot-bean-annotations-with-examples
+- https://docs.spring.io/spring-javaconfig/docs/1.0.0.M4/reference/html/ch02s02.html
