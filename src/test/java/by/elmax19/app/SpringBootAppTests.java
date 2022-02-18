@@ -33,7 +33,6 @@ class SpringBootAppTests {
     @DisplayName("FileSystemXmlApplicationContext contains fileSystemBean")
     void fileSystemBeanTest() {
         Assert.isTrue(fileSystemContext.containsBean("fileSystemBean"), "FileSystemXmlApplicationContext doesn't contain fileSystemBean");
-        System.out.println("");
     }
 
     @Test
