@@ -5,26 +5,19 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
-import javax.annotation.PostConstruct;
-
 @Configuration
-public class ApplicationContextProvider {
-    private final ClassPathXmlApplicationContext classPathXmlApplicationContext = new ClassPathXmlApplicationContext("classPathContext.xml");
-    private final FileSystemXmlApplicationContext fileSystemContext = new FileSystemXmlApplicationContext("classpath:fileSystemContext.xml");
-
+public class AppConfig {
     @Bean
     public ClassPathXmlApplicationContext classPathContext() {
+        ClassPathXmlApplicationContext classPathXmlApplicationContext = new ClassPathXmlApplicationContext("classPathContext.xml");
+        classPathXmlApplicationContext.registerShutdownHook();
         return classPathXmlApplicationContext;
     }
 
     @Bean
     public FileSystemXmlApplicationContext fileSystemContext() {
-        return fileSystemContext;
-    }
-
-    @PostConstruct
-    private void postConstruct() {
-        classPathXmlApplicationContext.registerShutdownHook();
+        FileSystemXmlApplicationContext fileSystemContext = new FileSystemXmlApplicationContext("classpath:fileSystemContext.xml");
         fileSystemContext.registerShutdownHook();
+        return fileSystemContext;
     }
 }

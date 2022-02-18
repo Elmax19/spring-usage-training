@@ -1,5 +1,6 @@
 package by.elmax19.app;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,20 +24,21 @@ class SpringBootAppTests {
     }
 
     @Test
+    @DisplayName("ClassPathXmlApplicationContext contains classPathBean")
     void classPathBeanTest() {
-        Assert.isTrue(classPathContext.containsBean("classPathBean"), "ClassPathXmlApplicationContext should contains classPathBean");
-        System.out.println("ClassPathXmlApplicationContext contains classPathBean");
+        Assert.isTrue(classPathContext.containsBean("classPathBean"), "ClassPathXmlApplicationContext doesn't contain classPathBean");
     }
 
     @Test
+    @DisplayName("FileSystemXmlApplicationContext contains fileSystemBean")
     void fileSystemBeanTest() {
-        Assert.isTrue(fileSystemContext.containsBean("fileSystemBean"), "FileSystemXmlApplicationContext should contains fileSystemBean");
-        System.out.println("FileSystemXmlApplicationContext contains fileSystemBean");
+        Assert.isTrue(fileSystemContext.containsBean("fileSystemBean"), "FileSystemXmlApplicationContext doesn't contain fileSystemBean");
+        System.out.println("");
     }
 
     @Test
+    @DisplayName("ApplicationContext contains freeBean")
     void freeBeanTest() {
-        Assert.isTrue(applicationContext.containsBean("freeBean"), "ApplicationContext should contains fileSystemBean");
-        System.out.println("ApplicationContext contains freeBean");
+        Assert.isTrue(applicationContext.containsBean("freeBean"), "ApplicationContext doesn't contain fileSystemBean");
     }
 }
