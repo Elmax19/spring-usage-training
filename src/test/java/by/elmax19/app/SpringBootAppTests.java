@@ -18,19 +18,19 @@ class SpringBootAppTests {
 
     @Test
     void classPathBeanTest() {
-        Assert.isTrue(appContext.getClassPathContext().containsBean("classPathBean"), "ClassPathXmlApplicationContext should contains classPathBean");
+        Assert.isTrue(appContext.classPathContext().containsBean("classPathBean"), "ClassPathXmlApplicationContext should contains classPathBean");
         System.out.println("ClassPathXmlApplicationContext contains classPathBean");
     }
 
     @Test
     void fileSystemBeanTest() {
-        Assert.isTrue(appContext.getFileSystemContext().containsBean("fileSystemBean"), "FileSystemXmlApplicationContext should contains fileSystemBean");
+        Assert.isTrue(appContext.fileSystemContext().containsBean("fileSystemBean"), "FileSystemXmlApplicationContext should contains fileSystemBean");
         System.out.println("FileSystemXmlApplicationContext contains fileSystemBean");
     }
 
     @Test
     void freeBeanTest() {
-        Assert.isTrue(appContext.getApplicationContext().containsBean("freeBean"), "ApplicationContext should contains fileSystemBean");
+        Assert.isTrue(appContext.applicationContext().containsBean("freeBean"), "ApplicationContext should contains fileSystemBean");
         System.out.println("ApplicationContext contains freeBean");
     }
 }
