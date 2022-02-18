@@ -11,11 +11,11 @@ import org.springframework.util.Assert;
 @SpringBootTest
 class SpringBootAppTests {
     @Autowired
-    ClassPathXmlApplicationContext classPathContext;
+    private ClassPathXmlApplicationContext classPathContext;
     @Autowired
-    FileSystemXmlApplicationContext fileSystemContext;
+    private FileSystemXmlApplicationContext fileSystemContext;
     @Autowired
-    ApplicationContext applicationContext;
+    private ApplicationContext applicationContext;
 
     @Test
     void contextLoads() {
