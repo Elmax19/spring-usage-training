@@ -1,6 +1,5 @@
 package by.elmax19.app;
 
-import by.elmax19.app.been.BeanScenario;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -17,6 +16,27 @@ import java.util.stream.Stream;
 
 @SpringBootTest
 class SpringBootAppTests {
+    private static class BeanScenario {
+        private ApplicationContext applicationContext;
+        private final String beanName;
+
+        public BeanScenario(String beanName) {
+            this.beanName = beanName;
+        }
+
+        public ApplicationContext getApplicationContext() {
+            return applicationContext;
+        }
+
+        public void setApplicationContext(ApplicationContext applicationContext) {
+            this.applicationContext = applicationContext;
+        }
+
+        public String getBeanName() {
+            return beanName;
+        }
+    }
+
     private static final BeanScenario classPathScenario = new BeanScenario("classPathBean");
     private static final BeanScenario fileSystemScenario = new BeanScenario("fileSystemBean");
     private static final BeanScenario applicationScenario = new BeanScenario("freeBean");
