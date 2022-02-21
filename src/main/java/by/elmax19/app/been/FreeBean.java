@@ -5,7 +5,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 
 @Component
-public class FreeBean implements InitializingBean, DisposableBean {
+public class FreeBean extends Bean implements InitializingBean, DisposableBean {
     public FreeBean() {
         System.out.println("-FreeBean-: Constructor invoked");
     }

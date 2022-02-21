@@ -1,6 +1,6 @@
 package by.elmax19.app.been;
 
-public class FileSystemBean {
+public class FileSystemBean extends Bean {
     public FileSystemBean() {
         System.out.println("-FileSystemBean-: Constructor invoked");
     }

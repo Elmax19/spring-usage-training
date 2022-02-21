@@ -2,10 +2,12 @@ package by.elmax19.app.context;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 @Configuration
+@ImportResource("classpath:anotherClassPathContext.xml")
 public class AppConfig {
     @Bean
     public ClassPathXmlApplicationContext classPathContext() {

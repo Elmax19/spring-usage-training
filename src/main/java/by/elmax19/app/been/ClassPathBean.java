@@ -1,6 +1,6 @@
 package by.elmax19.app.been;
 
-public class ClassPathBean {
+public class ClassPathBean extends Bean {
     public ClassPathBean() {
         System.out.println("-ClassPathBean-: Constructor invoked");
     }
