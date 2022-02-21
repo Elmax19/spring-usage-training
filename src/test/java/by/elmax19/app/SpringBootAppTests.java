@@ -16,11 +16,11 @@ import java.util.stream.Stream;
 
 @SpringBootTest
 class SpringBootAppTests {
-    private static class BeanScenario {
+    private static class BeanContextAndNameScenario {
         private ApplicationContext applicationContext;
         private final String beanName;
 
-        public BeanScenario(String beanName) {
+        public BeanContextAndNameScenario(String beanName) {
             this.beanName = beanName;
         }
 
@@ -37,9 +37,9 @@ class SpringBootAppTests {
         }
     }
 
-    private static final BeanScenario classPathScenario = new BeanScenario("classPathBean");
-    private static final BeanScenario fileSystemScenario = new BeanScenario("fileSystemBean");
-    private static final BeanScenario applicationScenario = new BeanScenario("freeBean");
+    private static final BeanContextAndNameScenario classPathScenario = new BeanContextAndNameScenario("classPathBean");
+    private static final BeanContextAndNameScenario fileSystemScenario = new BeanContextAndNameScenario("fileSystemBean");
+    private static final BeanContextAndNameScenario applicationScenario = new BeanContextAndNameScenario("freeBean");
 
     @Autowired
     private ClassPathXmlApplicationContext tmpClassPathContext;
@@ -62,7 +62,7 @@ class SpringBootAppTests {
 
     @ParameterizedTest
     @MethodSource("beanContextAndNameProvider")
-    void checkBeanContext(BeanScenario scenario) {
+    void checkBeanContext(BeanContextAndNameScenario scenario) {
         Assertions.assertTrue(scenario.getApplicationContext().containsBean(scenario.getBeanName()));
     }
 
