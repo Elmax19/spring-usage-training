@@ -1,43 +1,55 @@
 package by.elmax19.app;
 
-import org.junit.jupiter.api.DisplayName;
+import by.elmax19.app.been.BeanScenario;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
-import org.springframework.util.Assert;
+
+import javax.annotation.PostConstruct;
+import java.util.stream.Stream;
 
 @SpringBootTest
 class SpringBootAppTests {
+    private static final BeanScenario classPathScenario = new BeanScenario("classPathBean");
+    private static final BeanScenario fileSystemScenario = new BeanScenario("fileSystemBean");
+    private static final BeanScenario applicationScenario = new BeanScenario("freeBean");
+
     @Autowired
-    private ClassPathXmlApplicationContext classPathContext;
+    private ClassPathXmlApplicationContext tmpClassPathContext;
     @Autowired
-    private FileSystemXmlApplicationContext fileSystemContext;
+    private FileSystemXmlApplicationContext tmpFileSystemContext;
     @Autowired
-    private ApplicationContext applicationContext;
+    private ApplicationContext tmpApplicationContext;
+
+    @PostConstruct
+    public void init() {
+        classPathScenario.setApplicationContext(tmpClassPathContext);
+        fileSystemScenario.setApplicationContext(tmpFileSystemContext);
+        applicationScenario.setApplicationContext(tmpApplicationContext);
+    }
 
     @Test
     void contextLoads() {
         System.out.println("Context loading test");
     }
 
-    @Test
-    @DisplayName("ClassPathXmlApplicationContext contains classPathBean")
-    void classPathBeanTest() {
-        Assert.isTrue(classPathContext.containsBean("classPathBean"), "ClassPathXmlApplicationContext doesn't contain classPathBean");
+    @ParameterizedTest
+    @MethodSource("beanContextAndNameProvider")
+    void checkBeanContext(BeanScenario scenario) {
+        Assertions.assertTrue(scenario.getApplicationContext().containsBean(scenario.getBeanName()));
     }
 
-    @Test
-    @DisplayName("FileSystemXmlApplicationContext contains fileSystemBean")
-    void fileSystemBeanTest() {
-        Assert.isTrue(fileSystemContext.containsBean("fileSystemBean"), "FileSystemXmlApplicationContext doesn't contain fileSystemBean");
-    }
-
-    @Test
-    @DisplayName("ApplicationContext contains freeBean")
-    void freeBeanTest() {
-        Assert.isTrue(applicationContext.containsBean("freeBean"), "ApplicationContext doesn't contain fileSystemBean");
+    private static Stream<Arguments> beanContextAndNameProvider() {
+        return Stream.of(
+                Arguments.of(classPathScenario),
+                Arguments.of(fileSystemScenario),
+                Arguments.of(applicationScenario));
     }
 }
