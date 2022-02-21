@@ -16,6 +16,9 @@ import java.util.stream.Stream;
 
 @SpringBootTest
 class SpringBootAppTests {
+    private static final BeanContextAndNameScenario classPathScenario = new BeanContextAndNameScenario("classPathBean");
+    private static final BeanContextAndNameScenario fileSystemScenario = new BeanContextAndNameScenario("fileSystemBean");
+    private static final BeanContextAndNameScenario applicationScenario = new BeanContextAndNameScenario("freeBean");
     private static class BeanContextAndNameScenario {
         private ApplicationContext applicationContext;
         private final String beanName;
@@ -36,10 +39,6 @@ class SpringBootAppTests {
             return beanName;
         }
     }
-
-    private static final BeanContextAndNameScenario classPathScenario = new BeanContextAndNameScenario("classPathBean");
-    private static final BeanContextAndNameScenario fileSystemScenario = new BeanContextAndNameScenario("fileSystemBean");
-    private static final BeanContextAndNameScenario applicationScenario = new BeanContextAndNameScenario("freeBean");
 
     @Autowired
     private ClassPathXmlApplicationContext tmpClassPathContext;

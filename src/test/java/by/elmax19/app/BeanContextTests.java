@@ -22,28 +22,27 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 public class BeanContextTests {
+    private static final BeanClassAndContextScenario firstClassPathScenario = new BeanClassAndContextScenario();
+    private static final BeanClassAndContextScenario secondClassPathScenario = new BeanClassAndContextScenario();
+    private static final BeanClassAndContextScenario fileSystemScenario = new BeanClassAndContextScenario();
+    private static final BeanClassAndContextScenario applicationScenario = new BeanClassAndContextScenario();
     private static class BeanClassAndContextScenario {
-        private ApplicationContext applicationContext;
+        private String contextClassName;
         private Bean bean;
 
-        public ApplicationContext getApplicationContext() {
-            return applicationContext;
+        public String getContextClassName() {
+            return contextClassName;
         }
 
         public Bean getBean() {
             return bean;
         }
 
-        public void setApplicationContextAndBean(ApplicationContext applicationContext, Bean bean) {
-            this.applicationContext = applicationContext;
+        public void setApplicationContextAndBean(String contextClassName, Bean bean) {
+            this.contextClassName = contextClassName;
             this.bean = bean;
         }
     }
-
-    private static final BeanClassAndContextScenario firstClassPathScenario = new BeanClassAndContextScenario();
-    private static final BeanClassAndContextScenario secondClassPathScenario = new BeanClassAndContextScenario();
-    private static final BeanClassAndContextScenario fileSystemScenario = new BeanClassAndContextScenario();
-    private static final BeanClassAndContextScenario applicationScenario = new BeanClassAndContextScenario();
 
     @Qualifier("classPathContext")
     @Autowired
@@ -51,28 +50,30 @@ public class BeanContextTests {
     @Autowired
     private FileSystemXmlApplicationContext tmpFileSystemContext;
     @Autowired
-    private ApplicationContext tmpApplicationContext;
+    private AnotherClassPathBean anotherClassPathBean;
+    @Autowired
+    private FreeBean freeBean;
 
     @PostConstruct
     public void init() {
         firstClassPathScenario.setApplicationContextAndBean(
-                tmpClassPathContext,
+                "ClassPathXmlApplicationContext",
                 tmpClassPathContext.getBean(ClassPathBean.class));
         secondClassPathScenario.setApplicationContextAndBean(
-                tmpApplicationContext,
-                tmpApplicationContext.getBean(AnotherClassPathBean.class));
+                "AnnotationConfigApplicationContext",
+                anotherClassPathBean);
         fileSystemScenario.setApplicationContextAndBean(
-                tmpFileSystemContext,
+                "FileSystemXmlApplicationContext",
                 tmpFileSystemContext.getBean(FileSystemBean.class));
         applicationScenario.setApplicationContextAndBean(
-                tmpApplicationContext,
-                tmpApplicationContext.getBean(FreeBean.class));
+                "AnnotationConfigApplicationContext",
+                freeBean);
     }
 
     @ParameterizedTest
     @MethodSource("beanScenarioProvider")
     void checkBeanContext(BeanClassAndContextScenario scenario) {
-        checkBeanContainedByContext(scenario.getApplicationContext(), scenario.getBean());
+        checkContext(scenario.getContextClassName(), scenario.getBean());
     }
 
     private static Stream<Arguments> beanScenarioProvider() {
@@ -83,7 +84,7 @@ public class BeanContextTests {
                 Arguments.of(applicationScenario));
     }
 
-    private void checkBeanContainedByContext(ApplicationContext context, Bean bean) {
-        assertEquals(context, bean.getContext());
+    private void checkContext(String contextClassName, Bean bean) {
+        assertEquals(contextClassName, bean.getContext().getClass().getSimpleName());
     }
 }
