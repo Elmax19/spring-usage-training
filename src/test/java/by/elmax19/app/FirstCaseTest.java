@@ -1,58 +1,29 @@
 package by.elmax19.app;
 
-import by.elmax19.app.bean.FirstTestBeanInterface;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
+import by.elmax19.app.bean.FirstInterface;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import javax.annotation.PostConstruct;
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 public class FirstCaseTest {
-    private static final Scenario firstScenario = new Scenario();
-    private static final Scenario secondScenario = new Scenario();
-
-    private static class Scenario {
-        FirstTestBeanInterface bean;
-        String beanClassName;
-
-        public FirstTestBeanInterface getBean() {
-            return bean;
-        }
-
-        public String getBeanClassName() {
-            return beanClassName;
-        }
-
-        public void setBeanAndBeanClassName(FirstTestBeanInterface bean, String beanClassName) {
-            this.bean = bean;
-            this.beanClassName = beanClassName;
-        }
-    }
-
     @Autowired
-    private FirstTestBeanInterface testOneFirstBean;
+    private FirstInterface firstInterfaceFirstImpl;
     @Autowired
-    private FirstTestBeanInterface testOneSecondBean;
+    private FirstInterface firstInterfaceSecondImpl;
 
-    @PostConstruct
-    private void init() {
-        firstScenario.setBeanAndBeanClassName(testOneFirstBean, "TestOneFirstBean");
-        secondScenario.setBeanAndBeanClassName(testOneSecondBean, "TestOneSecondBean");
+    @Test
+    @DisplayName("First bean has FirstInterfaceFirstImpl type")
+    void checkFirstBeanByClassName() {
+        assertEquals(firstInterfaceFirstImpl.getClass().getSimpleName(), "FirstInterfaceFirstImpl");
     }
 
-    @ParameterizedTest
-    @MethodSource("beanScenarioProvider")
-    void checkBeanByClassName(Scenario scenario) {
-        assertEquals(scenario.getBean().getClass().getSimpleName(), scenario.getBeanClassName());
-    }
-
-    private static Stream<Arguments> beanScenarioProvider() {
-        return Stream.of(Arguments.of(firstScenario), Arguments.of(secondScenario));
+    @Test
+    @DisplayName("Second bean has FirstInterfaceSecondImpl type")
+    void checkSecondBeanByClassName() {
+        assertEquals(firstInterfaceSecondImpl.getClass().getSimpleName(), "FirstInterfaceSecondImpl");
     }
 }

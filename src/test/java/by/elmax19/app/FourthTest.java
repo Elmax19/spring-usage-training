@@ -1,6 +1,6 @@
 package by.elmax19.app;
 
-import by.elmax19.app.bean.impl.test4.TestBean;
+import by.elmax19.app.bean.impl.case4.MyBean;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -11,15 +11,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class FourthTest {
-    @Qualifier("myBean")
+    @Qualifier("beanName")
     @Autowired
-    private TestBean testBean;
+    private MyBean myBean;
     @Autowired
     private ApplicationContext applicationContext;
 
     @Test
     void checkBeanByClassName(){
-        assertTrue(applicationContext.containsBean("myBean"));
-        assertFalse(applicationContext.containsBean("testBean"));
+        assertDoesNotThrow(() -> applicationContext.getBean(myBean.getClass()));
+        assertFalse(applicationContext.containsBean("myBean"));
     }
 }
