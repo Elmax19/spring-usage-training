@@ -6,19 +6,24 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.TestPropertySource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @SpringBootTest
-@TestPropertySource(properties = {"selected.first = false"})
+@TestPropertySource(properties = {"property.condition.selected.class = second"})
 public class SecondConditionalOnPropertyTest {
     @Autowired
     private OnPropertyInterface bean;
+    @Autowired
+    private ApplicationContext context;
 
     @Test
     @DisplayName("Only Second bean has been injected")
     void checkSecondBeanCreation() {
         assertEquals(bean.getClass(), OnPropertySecondImpl.class);
+        assertFalse(context.containsBean("onPropertyFirstImpl"));
     }
 }
