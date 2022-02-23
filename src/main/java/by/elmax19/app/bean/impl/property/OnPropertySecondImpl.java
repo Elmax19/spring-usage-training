@@ -1,4 +1,4 @@
-package by.elmax19.app.bean.impl;
+package by.elmax19.app.bean.impl.property;
 
 import by.elmax19.app.bean.OnPropertyInterface;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

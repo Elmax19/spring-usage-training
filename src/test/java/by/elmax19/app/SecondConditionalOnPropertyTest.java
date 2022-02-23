@@ -1,7 +1,7 @@
 package by.elmax19.app;
 
 import by.elmax19.app.bean.OnPropertyInterface;
-import by.elmax19.app.bean.impl.OnPropertySecondImpl;
+import by.elmax19.app.bean.impl.property.OnPropertySecondImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
