@@ -9,7 +9,16 @@ Typically, when developing Spring-based applications, we may need to create some
 presence and the value of a configuration property. Fortunately, achieving that isn't as hard as it might look upon
 first glance. The Spring framework provides the _**ConditionalOnProperty**_ annotation precisely for this purpose.
 
+The _**ConditionalOnExpression**_ annotation lets configuration be included based on the result of a SpEL (Spring
+Expression Language) expression. For this example the _**Module**_ class is only loaded if a particular SpEL is enabled.
+This way, you might create similar modules that are only loaded if their respective SpEL has been found or enabled.
+
+SpEL or Spring Expression Language which can be used to query property value from properties file using _**$**_, or
+manipulate Java object and its attributes at runtime using _**#**_. Both modifiers _**$**_ and _**#**_ can be used in
+spring XML configuration file directly, or can be used in Java source code with _**Value**_ annotation.
+
 ## Useful links:
 
 - https://docs.spring.io/spring-framework/docs/current/reference/html/core.html#beans-java-conditional
 - https://www.baeldung.com/spring-conditional-annotations
+- https://roytuts.com/spring-conditionalonexpression-example
