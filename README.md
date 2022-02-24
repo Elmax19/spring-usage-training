@@ -21,6 +21,11 @@ SpEL or Spring Expression Language which can be used to query property value fro
 manipulate Java object and its attributes at runtime using _**#**_. Both modifiers _**$**_ and _**#**_ can be used in
 spring XML configuration file directly, or can be used in Java source code with _**Value**_ annotation.
 
+Spring _**ConditionalOnClass**_ and _**ConditionalOnMissingClass**_ annotations let _**Configuration**_ classes be
+included based on the presence or absence of specific classes. So _**ConditionalOnClass**_ loads a bean only if a
+certain class is on the classpath and _**ConditionalOnMissingClass**_ loads a bean only if a certain class is not on the
+classpath.
+
 ## Useful links:
 
 - https://docs.spring.io/spring-framework/docs/current/reference/html/core.html#beans-java-conditional
