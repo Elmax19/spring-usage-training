@@ -23,7 +23,7 @@ public class InstantDateBeanTest {
     @Test
     @DisplayName("InstantDate bean has been created")
     void checkInstantDateBeanCreation() {
-        assertDoesNotThrow(() -> System.out.println(context.getBean(InstantDateImpl.class).getDate()));
+        assertDoesNotThrow(() -> context.getBean(InstantDateImpl.class).getDate());
     }
 
     @Test

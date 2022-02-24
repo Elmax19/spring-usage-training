@@ -22,7 +22,7 @@ public class LocalDateBeanTest {
     @Test
     @DisplayName("LocalDate bean has been created")
     void checkLocalDateBeanCreation() {
-        assertDoesNotThrow(() -> System.out.println(context.getBean(LocalDateImpl.class).getDate()));
+        assertDoesNotThrow(() -> context.getBean(LocalDateImpl.class).getDate());
     }
 
     @Test
