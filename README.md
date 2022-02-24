@@ -17,8 +17,13 @@ SpEL or Spring Expression Language which can be used to query property value fro
 manipulate Java object and its attributes at runtime using _**#**_. Both modifiers _**$**_ and _**#**_ can be used in
 spring XML configuration file directly, or can be used in Java source code with _**Value**_ annotation.
 
+The _**ConditionalOnMissingBean**_ annotation is a spring conditional annotation for registering beans only when they
+are not already in the application context. We use _**ConditionalOnMissingBean**_ if we want to include a bean only if a
+specified bean is not present. For ex. To understand more consider this scenario as well.
+
 ## Useful links:
 
 - https://docs.spring.io/spring-framework/docs/current/reference/html/core.html#beans-java-conditional
 - https://www.baeldung.com/spring-conditional-annotations
 - https://roytuts.com/spring-conditionalonexpression-example
+- https://roytuts.com/spring-conditionalonmissingbean-example

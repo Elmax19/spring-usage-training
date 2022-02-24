@@ -2,6 +2,7 @@ package by.elmax19.app;
 
 import by.elmax19.app.bean.impl.expression.InstantDateImpl;
 import by.elmax19.app.bean.impl.expression.LocalDateImpl;
+import by.elmax19.app.bean.impl.expression.NotInstantDateImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -30,5 +31,11 @@ public class InstantDateBeanTest {
     @DisplayName("LocalDate bean has not been injected")
     void checkLocalDateBeanAbsence() {
         assertThrows(NoSuchBeanDefinitionException.class, () -> context.getBean(LocalDateImpl.class));
+    }
+
+    @Test
+    @DisplayName("NotInstant bean has not been injected")
+    void checkNotInstantDateBeanAbsence() {
+        assertThrows(NoSuchBeanDefinitionException.class, () -> context.getBean(NotInstantDateImpl.class));
     }
 }
