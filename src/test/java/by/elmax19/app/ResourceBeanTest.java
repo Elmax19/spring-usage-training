@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.math.BigDecimal;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
@@ -16,6 +18,6 @@ public class ResourceBeanTest {
     @Test
     @DisplayName("getBalance() method should return correct answer")
     void checkResourceBeanWorking() {
-        assertEquals(bean.getNewBalance(), 65);
+        assertEquals(bean.getNewBalance(), new BigDecimal("65.00"));
     }
 }
