@@ -1,5 +1,7 @@
 package by.elmax19.app.model;
 
+import by.elmax19.app.exception.NoSuchOperationException;
+
 import java.math.BigDecimal;
 
 public enum Operation {
@@ -15,12 +17,12 @@ public enum Operation {
 
     public abstract BigDecimal getNewBalance(BigDecimal balance, BigDecimal amount);
 
-    static Operation of(String name) {
+    static Operation of(String name) throws NoSuchOperationException {
         for (Operation operation : values()) {
             if (operation.name().equalsIgnoreCase(name)) {
                 return operation;
             }
         }
-        return DEBIT;
+        throw new NoSuchOperationException("No such operation with name: " + name);
     }
 }
