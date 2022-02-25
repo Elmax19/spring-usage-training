@@ -26,9 +26,14 @@ included based on the presence or absence of specific classes. So _**Conditional
 certain class is on the classpath and _**ConditionalOnMissingClass**_ loads a bean only if a certain class is not on the
 classpath.
 
+The _**ConditionalOnMissingBean**_ annotation is a spring conditional annotation for registering beans only when they
+are not already in the application context. We use _**ConditionalOnMissingBean**_ if we want to include a bean only if a
+specified bean is not present. For ex. To understand more consider this scenario as well.
+
 ## Useful links:
 
 - https://docs.spring.io/spring-framework/docs/current/reference/html/core.html#beans-java-conditional
 - https://www.baeldung.com/spring-conditional-annotations
 - https://roytuts.com/spring-conditionalonexpression-example
 - https://javadeveloperzone.com/spring/spring-conditionalonresource-example
+- https://roytuts.com/spring-conditionalonmissingbean-example
