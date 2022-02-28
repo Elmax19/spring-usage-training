@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.TestPropertySource;
@@ -20,6 +21,7 @@ import static org.mockito.Mockito.when;
 @SpringBootTest
 @TestPropertySource(properties = {"property.condition.selected.class = first"})
 public class CustomConditionalOnPropertyTest {
+    @Autowired
     @Mock
     private CustomOnPropertyInterface bean;
     @Mock
