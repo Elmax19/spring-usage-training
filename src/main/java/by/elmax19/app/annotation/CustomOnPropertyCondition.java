@@ -12,7 +12,9 @@ public class CustomOnPropertyCondition implements Condition {
     @Override
     public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
         MultiValueMap<String, Object> map = metadata.getAllAnnotationAttributes(CustomConditionalOnProperty.class.getName());
-        assert map != null;
+        if (map == null || !map.containsKey("name")) {
+            return false;
+        }
         Property property = new Property(String.valueOf(map.get("name").get(0)), String.valueOf(map.get("value").get(0)));
         if (property.getName().isBlank() || property.getValue().isBlank()) {
             return false;
