@@ -6,41 +6,24 @@ import org.springframework.core.env.PropertyResolver;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 import org.springframework.util.MultiValueMap;
 
-import java.util.Objects;
-
 public class CustomOnPropertyCondition implements Condition {
     @Override
     public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
         MultiValueMap<String, Object> map = metadata.getAllAnnotationAttributes(CustomConditionalOnProperty.class.getName());
-        if (map == null || !map.containsKey("name")) {
-            return false;
-        }
-        Property property = new Property(String.valueOf(map.get("name").get(0)), String.valueOf(map.get("value").get(0)));
-        if (property.getName().isBlank() || property.getValue().isBlank()) {
+        System.out.println(map.toString());
+        String attributeName = getAttributeValue(map, "name");
+        String attributeValue = getAttributeValue(map, "value");
+        if (attributeName == null || attributeValue == null) {
             return false;
         }
         PropertyResolver resolver = context.getEnvironment();
-        if (map.containsKey("name")) {
-            return Objects.requireNonNull(resolver.getProperty(property.getName())).equalsIgnoreCase(property.getValue());
-        }
-        return false;
+        String envVar = resolver.getProperty(attributeName);
+        return attributeValue.equals(envVar);
     }
 
-    private class Property {
-        private final String name;
-        private final String value;
 
-        public Property(String name, String value) {
-            this.name = name;
-            this.value = value;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public String getValue() {
-            return value;
-        }
+    private String getAttributeValue(MultiValueMap<String, Object> map, String attributeName) {
+        var value = map.get(attributeName);
+        return value == null ? null : String.valueOf(value.get(0));
     }
 }
