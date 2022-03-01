@@ -1,78 +1,74 @@
 package by.elmax19.app.annotation;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.annotation.ConditionContext;
 import org.springframework.core.env.Environment;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 
-import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class CustomOnPropertyConditionTest {
-    private static CustomOnPropertyCondition customOnPropertyCondition;
     @Mock
     private static AnnotatedTypeMetadata metadata;
-    private final MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+    private final CustomOnPropertyCondition customOnPropertyCondition = new CustomOnPropertyCondition();
     @Mock
     private ConditionContext context;
     @Mock
     private Environment resolver;
 
-    @BeforeAll
-    static void init() {
-        MockitoAnnotations.openMocks(CustomOnPropertyConditionTest.class);
-        customOnPropertyCondition = new CustomOnPropertyCondition();
-    }
-
     @Test
     @DisplayName("matches() should return false when attributeName == null")
-    void matchesFirstFalseTest() {
-        when(metadata.getAllAnnotationAttributes(any())).thenReturn(map);
+    void matchesReturnsFalseWhenNullName() {
+        when(metadata.getAllAnnotationAttributes(CustomConditionalOnProperty.class.getName()))
+                .thenReturn(new LinkedMultiValueMap<>());
         assertFalse(customOnPropertyCondition.matches(context, metadata));
-        verify(context, times(0)).getEnvironment();
+        verifyNoInteractions(context);
     }
 
     @Test
     @DisplayName("matches() should return false when attributeValue == null")
-    void matchesSecondFalseTest() {
-        map.put("name", Collections.singletonList("property.condition.selected.class"));
-        when(metadata.getAllAnnotationAttributes(any())).thenReturn(map);
+    void matchesReturnsFalseWhenNullValue() {
+        when(metadata.getAllAnnotationAttributes((CustomConditionalOnProperty.class.getName())))
+                .thenReturn(new LinkedMultiValueMap<>(
+                        Map.of("name", List.of("property.condition.selected.class"))));
         assertFalse(customOnPropertyCondition.matches(context, metadata));
-        verify(context, times(0)).getEnvironment();
+        verifyNoInteractions(context);
     }
 
     @Test
     @DisplayName("matches() should return false when attributeValue is different from property")
-    void matchesThirdFalseTest() {
-        map.put("name", Collections.singletonList("property.condition.selected.class"));
-        map.put("value", Collections.singletonList("first"));
-        when(metadata.getAllAnnotationAttributes(any())).thenReturn(map);
+    void matchesReturnsFalseWhenAnotherValue() {
+        when(metadata.getAllAnnotationAttributes((CustomConditionalOnProperty.class.getName())))
+                .thenReturn(new LinkedMultiValueMap<>(
+                        Map.of("name", List.of("property.condition.selected.class"),
+                                "value", List.of("first"))));
         when(context.getEnvironment()).thenReturn(resolver);
         when(resolver.getProperty(any())).thenReturn("second");
         assertFalse(customOnPropertyCondition.matches(context, metadata));
-        verify(context, times(1)).getEnvironment();
+        verify(context).getEnvironment();
     }
 
     @Test
     @DisplayName("matches() should return true")
-    void matchesTrueTest() {
-        map.put("name", Collections.singletonList("property.condition.selected.class"));
-        map.put("value", Collections.singletonList("first"));
-        when(metadata.getAllAnnotationAttributes(any())).thenReturn(map);
+    void matchesReturnsTrue() {
+        when(metadata.getAllAnnotationAttributes((CustomConditionalOnProperty.class.getName())))
+                .thenReturn(new LinkedMultiValueMap<>(
+                        Map.of("name", List.of("property.condition.selected.class"),
+                                "value", List.of("first"))));
         when(context.getEnvironment()).thenReturn(resolver);
         when(resolver.getProperty(any())).thenReturn("first");
         assertTrue(customOnPropertyCondition.matches(context, metadata));
