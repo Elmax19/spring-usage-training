@@ -1,9 +1,9 @@
 package by.elmax19.app.bean.impl.property;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import by.elmax19.app.annotation.CustomConditionalOnBean;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConditionalOnBean(type = "by.elmax19.app.bean.impl.property.OnPropertyFirstImpl")
+@CustomConditionalOnBean(value = OnPropertyFirstImpl.class)
 public class OnBeanBean {
 }
