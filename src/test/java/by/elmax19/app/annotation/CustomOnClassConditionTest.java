@@ -8,9 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.annotation.ConditionContext;
 import org.springframework.core.type.AnnotatedTypeMetadata;
-import org.springframework.util.LinkedMultiValueMap;
 
-import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -34,39 +32,36 @@ class CustomOnClassConditionTest {
     @Test
     @DisplayName("matches() should return false when map is empty")
     void matchesReturnsFalseWhenEmptyMap() {
-        when(metadata.getAllAnnotationAttributes(CustomConditionalOnClass.class.getName()))
-                .thenReturn(new LinkedMultiValueMap<>());
+        when(metadata.getAnnotationAttributes(CustomConditionalOnClass.class.getName()))
+                .thenReturn(Map.of());
         assertFalse(customOnBeanCondition.matches(context, metadata));
     }
 
     @Test
     @DisplayName("matches() should return false when map has no classes names")
     void matchesReturnsFalseWhenMapHasNoNames() {
-        when(metadata.getAllAnnotationAttributes(CustomConditionalOnClass.class.getName()))
-                .thenReturn(new LinkedMultiValueMap<>(
-                        Map.of("name", List.of((Object) (new String[]{})))));
+        when(metadata.getAnnotationAttributes(CustomConditionalOnClass.class.getName()))
+                .thenReturn(Map.of("name", new String[]{}));
         assertFalse(customOnBeanCondition.matches(context, metadata));
     }
 
     @Test
     @DisplayName("matches() should return false when at least bean by name is absent")
     void matchesReturnsFalseWhenNoClassByName() {
-        when(metadata.getAllAnnotationAttributes(CustomConditionalOnClass.class.getName()))
-                .thenReturn(new LinkedMultiValueMap<>(
-                        Map.of("name", List.of((Object) (new String[]{
-                                "by.elmax19.app.bean.impl.property.custom.FirstCustomOnPropertyImpl",
-                                "by.elmax19.app.bean.impl.property.custom.SomeAbsentClass"})))));
+        when(metadata.getAnnotationAttributes(CustomConditionalOnClass.class.getName()))
+                .thenReturn(Map.of("name", new String[]{
+                        "by.elmax19.app.bean.impl.property.custom.FirstCustomOnPropertyImpl",
+                        "by.elmax19.app.bean.impl.property.custom.SomeAbsentClass"}));
         assertFalse(customOnBeanCondition.matches(context, metadata));
     }
 
     @Test
     @DisplayName("matches() should return true")
     void matchesReturnsTrue() {
-        when(metadata.getAllAnnotationAttributes((CustomConditionalOnClass.class.getName())))
-                .thenReturn(new LinkedMultiValueMap<>(
-                        Map.of("name", List.of((Object) (new String[]{
-                                "by.elmax19.app.bean.impl.property.custom.FirstCustomOnPropertyImpl",
-                                "by.elmax19.app.bean.impl.property.custom.SecondCustomOnPropertyImpl"})))));
+        when(metadata.getAnnotationAttributes(CustomConditionalOnClass.class.getName()))
+                .thenReturn(Map.of("name", new String[]{
+                        "by.elmax19.app.bean.impl.property.custom.FirstCustomOnPropertyImpl",
+                        "by.elmax19.app.bean.impl.property.custom.SecondCustomOnPropertyImpl"}));
         assertTrue(customOnBeanCondition.matches(context, metadata));
     }
 }

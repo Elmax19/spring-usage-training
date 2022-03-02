@@ -4,22 +4,22 @@ import org.springframework.context.annotation.Condition;
 import org.springframework.context.annotation.ConditionContext;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 import org.springframework.util.ClassUtils;
-import org.springframework.util.MultiValueMap;
 
 import java.util.List;
+import java.util.Map;
 
 public class CustomOnClassCondition implements Condition {
     @Override
     public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
-        MultiValueMap<String, Object> map = metadata.getAllAnnotationAttributes(CustomConditionalOnClass.class.getName());
+        var map = metadata.getAnnotationAttributes(CustomConditionalOnClass.class.getName());
         ClassLoader classLoader = context.getClassLoader();
-        List<String> attributeNames = getAttributeValue(map, "name");
+        List<String> attributeNames = getNameAttributeValue(map);
         return attributeNames != null && !attributeNames.isEmpty() && areAllClassesExist(attributeNames, classLoader);
     }
 
-    private List<String> getAttributeValue(MultiValueMap<String, Object> map, String attributeName) {
-        List attributes = map.get(attributeName);
-        return attributes == null ? null : List.of((String[]) attributes.get(0));
+    private List<String> getNameAttributeValue(Map<String, Object> map) {
+        String[] attributes = (String[]) map.get("name");
+        return attributes == null ? null : List.of(attributes);
     }
 
     private boolean areAllClassesExist(List<String> classesNames, ClassLoader classLoader) {
