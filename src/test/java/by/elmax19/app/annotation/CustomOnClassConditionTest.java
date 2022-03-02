@@ -1,7 +1,5 @@
 package by.elmax19.app.annotation;
 
-import by.elmax19.app.bean.impl.property.custom.FirstCustomOnPropertyImpl;
-import by.elmax19.app.bean.impl.property.custom.SecondCustomOnPropertyImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,9 +35,16 @@ class CustomOnClassConditionTest {
     @DisplayName("matches() should return false when map is empty")
     void matchesReturnsFalseWhenEmptyMap() {
         when(metadata.getAllAnnotationAttributes(CustomConditionalOnClass.class.getName()))
+                .thenReturn(new LinkedMultiValueMap<>());
+        assertFalse(customOnBeanCondition.matches(context, metadata));
+    }
+
+    @Test
+    @DisplayName("matches() should return false when map has no classes names")
+    void matchesReturnsFalseWhenMapHasNoNames() {
+        when(metadata.getAllAnnotationAttributes(CustomConditionalOnClass.class.getName()))
                 .thenReturn(new LinkedMultiValueMap<>(
-                        Map.of("name", List.of((Object) (new String[]{})),
-                                "value", List.of((Object) (new Class[]{})))));
+                        Map.of("name", List.of((Object) (new String[]{})))));
         assertFalse(customOnBeanCondition.matches(context, metadata));
     }
 
@@ -49,9 +54,8 @@ class CustomOnClassConditionTest {
         when(metadata.getAllAnnotationAttributes(CustomConditionalOnClass.class.getName()))
                 .thenReturn(new LinkedMultiValueMap<>(
                         Map.of("name", List.of((Object) (new String[]{
-                                        "by.elmax19.app.bean.impl.property.custom.FirstCustomOnPropertyImpl",
-                                        "by.elmax19.app.bean.impl.property.custom.SomeAbsentClass"})),
-                                "value", List.of((Object) (new Class[]{})))));
+                                "by.elmax19.app.bean.impl.property.custom.FirstCustomOnPropertyImpl",
+                                "by.elmax19.app.bean.impl.property.custom.SomeAbsentClass"})))));
         assertFalse(customOnBeanCondition.matches(context, metadata));
     }
 
@@ -61,11 +65,8 @@ class CustomOnClassConditionTest {
         when(metadata.getAllAnnotationAttributes((CustomConditionalOnClass.class.getName())))
                 .thenReturn(new LinkedMultiValueMap<>(
                         Map.of("name", List.of((Object) (new String[]{
-                                        "by.elmax19.app.bean.impl.property.custom.FirstCustomOnPropertyImpl",
-                                        "by.elmax19.app.bean.impl.property.custom.SecondCustomOnPropertyImpl"})),
-                                "value", List.of((Object) (new Class[]{
-                                        FirstCustomOnPropertyImpl.class,
-                                        SecondCustomOnPropertyImpl.class})))));
+                                "by.elmax19.app.bean.impl.property.custom.FirstCustomOnPropertyImpl",
+                                "by.elmax19.app.bean.impl.property.custom.SecondCustomOnPropertyImpl"})))));
         assertTrue(customOnBeanCondition.matches(context, metadata));
     }
 }

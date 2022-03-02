@@ -14,28 +14,22 @@ public class CustomOnClassCondition implements Condition {
         MultiValueMap<String, Object> map = metadata.getAllAnnotationAttributes(CustomConditionalOnClass.class.getName());
         ClassLoader classLoader = context.getClassLoader();
         List<String> attributeNames = getAttributeValue(map, "name");
-        List<Class<?>> attributeValue = getAttributeValue(map, "value");
-        if (attributeNames.isEmpty() && attributeValue.isEmpty()) {
+        if (attributeNames == null || attributeNames.isEmpty()) {
             return false;
         }
-        return (attributeNames.isEmpty() || matchClassNames(attributeNames, classLoader))
-                && (attributeValue.isEmpty() || matchClassValues(attributeValue, classLoader));
+        return areAllClassesExist(attributeNames, classLoader);
     }
 
-    private <T> List<T> getAttributeValue(MultiValueMap<String, Object> map, String attributeName) {
-        Object attributes = map.get(attributeName).get(0);
-        return List.of((T[]) attributes);
+    private List<String> getAttributeValue(MultiValueMap<String, Object> map, String attributeName) {
+        List attributes = map.get(attributeName);
+        return attributes == null ? null : List.of((String[]) attributes.get(0));
     }
 
-    private boolean matchClassNames(List<String> names, ClassLoader classLoader) {
-        return names.stream().allMatch(name -> checkClassExists(classLoader, name));
+    private boolean areAllClassesExist(List<String> classesNames, ClassLoader classLoader) {
+        return classesNames.stream().allMatch(name -> isClassPresent(classLoader, name));
     }
 
-    private boolean matchClassValues(List<Class<?>> values, ClassLoader classLoader) {
-        return values.stream().allMatch(value -> checkClassExists(classLoader, value.getName()));
-    }
-
-    private boolean checkClassExists(ClassLoader classLoader, String className) {
+    private boolean isClassPresent(ClassLoader classLoader, String className) {
         return ClassUtils.isPresent(className, classLoader);
     }
 }

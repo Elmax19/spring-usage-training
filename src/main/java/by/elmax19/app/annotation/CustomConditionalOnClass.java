@@ -12,5 +12,4 @@ import java.lang.annotation.Target;
 @Conditional(CustomOnClassCondition.class)
 public @interface CustomConditionalOnClass {
     String[] name() default {};
-    Class<?>[] value() default {};
 }
