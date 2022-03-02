@@ -14,10 +14,7 @@ public class CustomOnClassCondition implements Condition {
         MultiValueMap<String, Object> map = metadata.getAllAnnotationAttributes(CustomConditionalOnClass.class.getName());
         ClassLoader classLoader = context.getClassLoader();
         List<String> attributeNames = getAttributeValue(map, "name");
-        if (attributeNames == null || attributeNames.isEmpty()) {
-            return false;
-        }
-        return areAllClassesExist(attributeNames, classLoader);
+        return attributeNames != null && !attributeNames.isEmpty() && areAllClassesExist(attributeNames, classLoader);
     }
 
     private List<String> getAttributeValue(MultiValueMap<String, Object> map, String attributeName) {
