@@ -8,10 +8,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE, ElementType.METHOD })
-@Conditional(CustomOnBeanCondition.class)
-public @interface CustomConditionalOnBean {
+@Target({ElementType.TYPE, ElementType.METHOD})
+@Conditional(CustomOnClassCondition.class)
+public @interface CustomConditionalOnClass {
     String[] name() default {};
-    String[] type() default {};
     Class<?>[] value() default {};
 }

@@ -1,7 +1,6 @@
 package by.elmax19.app;
 
 import by.elmax19.app.bean.OnPropertyInterface;
-import by.elmax19.app.bean.impl.property.OnBeanBean;
 import by.elmax19.app.bean.impl.property.OnPropertyFirstImpl;
 import by.elmax19.app.bean.impl.property.OnPropertySecondImpl;
 import org.junit.jupiter.api.DisplayName;
@@ -34,11 +33,5 @@ public class SecondConditionalOnPropertyTest {
     @DisplayName("First bean has not been injected")
     void checkFirstBeanAbsence() {
         assertThrows(NoSuchBeanDefinitionException.class, () -> context.getBean(OnPropertyFirstImpl.class));
-    }
-
-    @Test
-    @DisplayName("OnBean bean has not been injected")
-    void checkOnBeanAbsence() {
-        assertThrows(NoSuchBeanDefinitionException.class, () -> context.getBean(OnBeanBean.class));
     }
 }

@@ -1,7 +1,7 @@
 package by.elmax19.app;
 
 import by.elmax19.app.bean.OnPropertyInterface;
-import by.elmax19.app.bean.impl.property.OnBeanBean;
+import by.elmax19.app.bean.impl.property.custom.CustomOnClassBean;
 import by.elmax19.app.bean.impl.property.OnPropertyFirstImpl;
 import by.elmax19.app.bean.impl.property.OnPropertySecondImpl;
 import org.junit.jupiter.api.DisplayName;
@@ -39,6 +39,6 @@ public class FirstConditionalOnPropertyTest {
     @Test
     @DisplayName("OnBean bean has been injected")
     void checkOnBeanCreation() {
-        assertDoesNotThrow(() -> context.getBean(OnBeanBean.class));
+        assertDoesNotThrow(() -> context.getBean(CustomOnClassBean.class));
     }
 }
