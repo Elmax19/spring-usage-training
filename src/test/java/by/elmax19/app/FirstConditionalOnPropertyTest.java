@@ -37,7 +37,7 @@ public class FirstConditionalOnPropertyTest {
     }
 
     @Test
-    @DisplayName("OnBean bean has been injected")
+    @DisplayName("Custom onClass bean has been injected")
     void checkOnBeanCreation() {
         assertDoesNotThrow(() -> context.getBean(CustomOnClassBean.class));
     }
