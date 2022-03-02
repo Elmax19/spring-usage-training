@@ -30,6 +30,9 @@ The _**ConditionalOnMissingBean**_ annotation is a spring conditional annotation
 are not already in the application context. We use _**ConditionalOnMissingBean**_ if we want to include a bean only if a
 specified bean is not present. For ex. To understand more consider this scenario as well.
 
+The _**ConditionalOnBean**_ annotation let a bean be included based on the presence of specific beans. By default,
+Spring will search entire hierarchy (_**SearchStrategy.ALL**_).
+
 ## Useful links:
 
 - https://docs.spring.io/spring-framework/docs/current/reference/html/core.html#beans-java-conditional
@@ -37,3 +40,4 @@ specified bean is not present. For ex. To understand more consider this scenario
 - https://roytuts.com/spring-conditionalonexpression-example
 - https://javadeveloperzone.com/spring/spring-conditionalonresource-example
 - https://roytuts.com/spring-conditionalonmissingbean-example
+- https://roytuts.com/spring-conditionalonbean-example
