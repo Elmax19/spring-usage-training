@@ -1,1 +1,3 @@
 rootProject.name = 'spring-boot-app'
+include 'commons-starter'
+include 'volleyball-info-module'
