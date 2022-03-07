@@ -1,35 +1,43 @@
 plugins {
-	id 'org.springframework.boot' version '2.6.4'
-	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-	id 'java'
-}
-
-group = 'by.elmax19'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '17'
-
-bootJar {
-	enabled = false
-}
-jar {
-	enabled = true
+    id 'org.springframework.boot' version '2.6.4'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
-dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+bootJar {
+    enabled = false
 }
 
 allprojects {
-	test {
-		useJUnitPlatform()
-	}
+    group = 'by.elmax19'
+    version = '0.0.1-SNAPSHOT'
 }
 
-tasks.named('test') {
-	useJUnitPlatform()
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    repositories {
+        mavenCentral()
+    }
+
+    tasks.named('test') {
+        useJUnitPlatform()
+    }
+
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    }
+}
+
+project(':volleyball-info-module') {
+    dependencies {
+        implementation project(':commons-starter')
+    }
 }
