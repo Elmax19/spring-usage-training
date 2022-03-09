@@ -1,21 +1,19 @@
 package by.elmax19.commonsstarter.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 
-@Configuration
-@ConfigurationProperties(prefix = "database")
+@ConfigurationProperties(prefix = "hello.world")
 public class PropertyConfig {
     /**
-     * Database prefix of tables to work with
+     * The name for whom will be addressed a message
      */
-    private String workspacePrefix;
+    private String displayName;
 
-    public String getWorkspacePrefix() {
-        return workspacePrefix;
+    public String getDisplayName() {
+        return displayName;
     }
 
-    public void setWorkspacePrefix(String workspacePrefix) {
-        this.workspacePrefix = workspacePrefix;
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 }

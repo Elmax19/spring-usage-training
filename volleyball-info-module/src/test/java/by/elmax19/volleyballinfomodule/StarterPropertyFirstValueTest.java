@@ -1,6 +1,6 @@
 package by.elmax19.volleyballinfomodule;
 
-import by.elmax19.commonsstarter.bean.impl.PropertyBean;
+import by.elmax19.commonsstarter.bean.impl.HelloWorldBean;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,14 +10,14 @@ import org.springframework.test.context.TestPropertySource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
-@TestPropertySource(properties = {"database.workspace-prefix=TestAccount"})
+@TestPropertySource(properties = {"hello.world.display-name=TestAccount"})
 public class StarterPropertyFirstValueTest {
     @Autowired
-    private PropertyBean propertyBean;
+    private HelloWorldBean bean;
 
     @Test
     @DisplayName("Bean message should be 'Hello, TestAccount!'")
     void checkPropertyBeanMessage() {
-        assertEquals("Hello, TestAccount!", propertyBean.getMessage());
+        assertEquals("Hello, TestAccount!", bean.getMessage());
     }
 }
