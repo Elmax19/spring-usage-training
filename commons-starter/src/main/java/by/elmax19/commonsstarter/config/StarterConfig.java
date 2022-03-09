@@ -7,10 +7,12 @@ import by.elmax19.commonsstarter.bean.impl.PropertyBean;
 import by.elmax19.commonsstarter.bean.impl.SecondInterfaceImpl;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@EnableConfigurationProperties(PropertyConfig.class)
 public class StarterConfig {
     @Bean
     @ConditionalOnMissingBean
@@ -26,7 +28,7 @@ public class StarterConfig {
 
     @Bean
     @ConditionalOnProperty(prefix = "database", name = "workspace-prefix")
-    public PropertyBean propertyBean() {
-        return new PropertyBean();
+    public PropertyBean propertyBean(PropertyConfig config) {
+        return new PropertyBean(config.getWorkspacePrefix());
     }
 }
