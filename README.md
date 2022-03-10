@@ -13,7 +13,17 @@ including a dependency in the pom.xml enables so many features.
 When Spring Boot starts up, it looks for a file named spring.factories in the classpath. This file is located in the
 META-INF directory.
 
+The majority of the metadata file is generated automatically at compile time by processing all items annotated with
+_**ConfigurationProperties**_.
+
+The processor picks up both classes and methods that are annotated with _**ConfigurationProperties**_.
+
+If the class is also annotated with _**ConstructorBinding**_, a single constructor is expected and one property is
+created per constructor parameter. Otherwise, properties are discovered through the presence of standard getters and
+setters with special handling for collection and map types.
+
 ## Useful links:
 
 - https://www.baeldung.com/spring-boot-custom-starter
 - https://github.com/proob/gradle-multi-module-project
+- https://docs.spring.io/spring-boot/docs/2.6.4/reference/html/configuration-metadata.html#appendix.configuration-metadata.annotation-processor
