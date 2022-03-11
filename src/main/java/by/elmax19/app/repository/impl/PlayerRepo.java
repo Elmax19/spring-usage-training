@@ -63,17 +63,6 @@ public class PlayerRepo implements CommonRepo<Player> {
 
     @Override
     public Document convertToDocument(Player player) {
-//        return new Document("_id", player.getId())
-//                .append("surname", player.getSurname())
-//                .append("name", player.getName())
-//                .append("age", player.getAge())
-//                .append("height", player.getHeight())
-//                .append("spike", player.getSpike())
-//                .append("block", player.getBlock())
-//                .append("position", player.getPosition())
-//                .append("currentClub", player.getCurrentClub())
-//                .append("number", player.getNumber())
-//                .append("nationalities", player.getNationalities());
         return Document.parse(player.toString());
     }
 

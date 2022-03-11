@@ -10,7 +10,6 @@ import java.util.Locale;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-@Builder
 public class Player extends BaseEntity {
     private String surname;
     private String name;
