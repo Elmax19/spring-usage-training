@@ -1,11 +1,13 @@
 package by.elmax19.app.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.bson.types.ObjectId;
 
 import java.util.List;
 
 @Data
+@AllArgsConstructor
 public class Player {
     private ObjectId id;
     private String surname;
@@ -21,20 +23,6 @@ public class Player {
 
     public Player(String surname, String name, Integer age, Double height, Integer spike, Integer block, Position position, String currentClub, Integer number, List<String> nationality) {
         this.id = new ObjectId();
-        this.surname = surname;
-        this.name = name;
-        this.age = age;
-        this.height = height;
-        this.spike = spike;
-        this.block = block;
-        this.position = position;
-        this.currentClub = currentClub;
-        this.number = number;
-        this.nationalities = nationality;
-    }
-
-    public Player(ObjectId id, String surname, String name, Integer age, Double height, Integer spike, Integer block, Position position, String currentClub, Integer number, List<String> nationality) {
-        this.id = id;
         this.surname = surname;
         this.name = name;
         this.age = age;
