@@ -1,16 +1,13 @@
 package by.elmax19.app.model;
 
-import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import org.bson.types.ObjectId;
 
 import java.util.List;
-import java.util.Locale;
 
 @Data
-@EqualsAndHashCode(callSuper = true)
-public class Player extends BaseEntity {
+public class Player {
+    private ObjectId id;
     private String surname;
     private String name;
     private Integer age;
@@ -23,6 +20,7 @@ public class Player extends BaseEntity {
     private List<String> nationalities;
 
     public Player(String surname, String name, Integer age, Double height, Integer spike, Integer block, Position position, String currentClub, Integer number, List<String> nationality) {
+        this.id = new ObjectId();
         this.surname = surname;
         this.name = name;
         this.age = age;
@@ -36,7 +34,7 @@ public class Player extends BaseEntity {
     }
 
     public Player(ObjectId id, String surname, String name, Integer age, Double height, Integer spike, Integer block, Position position, String currentClub, Integer number, List<String> nationality) {
-        super(id);
+        this.id = id;
         this.surname = surname;
         this.name = name;
         this.age = age;
@@ -52,18 +50,19 @@ public class Player extends BaseEntity {
     @Override
     public String toString() {
         StringBuilder nationalitiesList = new StringBuilder();
-        for(String nationality : nationalities){
+        for (String nationality : nationalities) {
             nationalitiesList.append('\"').append(nationality).append('\"').append(',');
         }
         nationalitiesList.setLength(nationalitiesList.length() - 1);
         return "{" +
+                "\"_id\": ObjectId(\"" + id + "\")," +
                 "\"surname\": \"" + surname + "\"," +
                 "\"name\": \"" + name + "\"," +
                 "\"age\": " + age + ',' +
                 "\"height\": " + height + ',' +
                 "\"spike\": " + spike + ',' +
                 "\"block\": " + block + ',' +
-                "\"position\": \"" + position.name().toLowerCase(Locale.ROOT) + "\"," +
+                "\"position\": \"" + position.name() + "\"," +
                 "\"currentClub\": \"" + currentClub + "\"," +
                 "\"number\": " + number + ',' +
                 "\"nationalities\": [" + nationalitiesList + ']' +

@@ -1,6 +1,5 @@
 package by.elmax19.app.repository;
 
-import by.elmax19.app.model.BaseEntity;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
@@ -8,7 +7,7 @@ import org.bson.types.ObjectId;
 
 import java.util.Optional;
 
-public interface CommonRepo<T extends BaseEntity> {
+public interface CommonRepo<T> {
     Optional<T> findById(ObjectId id);
 
     T create(T entity);
@@ -20,4 +19,6 @@ public interface CommonRepo<T extends BaseEntity> {
     Document convertToDocument(T entity);
 
     T convertToEntity(Document document);
+
+    long getDocumentsCount();
 }

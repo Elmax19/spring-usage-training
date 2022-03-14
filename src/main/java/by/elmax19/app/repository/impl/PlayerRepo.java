@@ -4,6 +4,7 @@ import by.elmax19.app.model.Player;
 import by.elmax19.app.model.Position;
 import by.elmax19.app.repository.CommonRepo;
 import by.elmax19.app.service.DatabaseService;
+import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
@@ -61,6 +62,15 @@ public class PlayerRepo implements CommonRepo<Player> {
         return collection.deleteOne(filter);
     }
 
+    public void deleteAll() {
+        collection.deleteMany(new BasicDBObject());
+    }
+
+    @Override
+    public long getDocumentsCount() {
+        return collection.countDocuments();
+    }
+
     @Override
     public Document convertToDocument(Player player) {
         return Document.parse(player.toString());
@@ -90,7 +100,7 @@ public class PlayerRepo implements CommonRepo<Player> {
                 set("height", player.getHeight()),
                 set("spike", player.getSpike()),
                 set("block", player.getBlock()),
-                set("position", player.getPosition()),
+                set("position", player.getPosition().name()),
                 set("currentClub", player.getCurrentClub()),
                 set("number", player.getNumber()),
                 set("nationalities", player.getNationalities()));
