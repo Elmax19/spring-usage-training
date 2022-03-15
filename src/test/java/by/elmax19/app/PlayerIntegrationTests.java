@@ -3,20 +3,29 @@ package by.elmax19.app;
 import by.elmax19.app.model.Player;
 import by.elmax19.app.model.Position;
 import by.elmax19.app.repository.impl.PlayerRepo;
+import de.flapdoodle.embed.mongo.MongodExecutable;
+import de.flapdoodle.embed.mongo.MongodStarter;
+import de.flapdoodle.embed.mongo.config.ImmutableMongodConfig;
+import de.flapdoodle.embed.mongo.config.MongodConfig;
+import de.flapdoodle.embed.mongo.config.Net;
+import de.flapdoodle.embed.mongo.distribution.Version;
+import de.flapdoodle.embed.process.runtime.Network;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.PostConstruct;
+import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 
 @SpringBootTest
 public class PlayerIntegrationTests {
@@ -27,6 +36,9 @@ public class PlayerIntegrationTests {
     private final Player secondPlayer;
     private final Player thirdPlayer;
     private final Player fourthPlayer;
+
+    @BeforeEach
+
 
     @PostConstruct
     private void init() {
@@ -82,10 +94,19 @@ public class PlayerIntegrationTests {
 
     @Test
     @DisplayName("First player has been added")
-    void checkPlayerCreation() {
+    void checkPlayerCreation() throws IOException {
+//        ImmutableMongodConfig mongodConfig = MongodConfig
+//                .builder()
+//                .version(Version.Main.PRODUCTION)
+//                .net(new Net(27017, Network.localhostIsIPv6()))
+//                .build();
+//        MongodStarter starter = MongodStarter.getDefaultInstance();
+//        MongodExecutable mongodExecutable = starter.prepare(mongodConfig);
+//        mongodExecutable.start();
         long countOfDocumentBeforeCreation = playerRepo.getDocumentsCount();
         assertEquals(firstPlayer, playerRepo.create(firstPlayer));
         assertEquals(countOfDocumentBeforeCreation + 1, playerRepo.getDocumentsCount());
+        //mongodExecutable.stop();
     }
 
     @Test
