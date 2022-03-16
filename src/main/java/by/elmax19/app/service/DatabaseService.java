@@ -12,8 +12,8 @@ public class DatabaseService {
     private final MongoDatabase database;
 
     public DatabaseService(
-            @Value("${spring.data.mongodb.host}") String host,
-            @Value("${spring.data.mongodb.port}") int port,
+            @Value("${mongodb.database.host}") String host,
+            @Value("${mongodb.database.port}") int port,
             @Value("${mongodb.database.name}") String databaseName) {
         MongoClient client = new MongoClient(host, port);
         database = client.getDatabase(databaseName);
