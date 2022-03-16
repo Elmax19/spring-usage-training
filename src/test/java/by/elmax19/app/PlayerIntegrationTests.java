@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -82,7 +81,7 @@ public class PlayerIntegrationTests {
 
     @Test
     @DisplayName("First player has been added")
-    void checkPlayerCreation() throws IOException {
+    void checkPlayerCreation() {
         long countOfDocumentBeforeCreation = playerRepo.getDocumentsCount();
         assertEquals(firstPlayer, playerRepo.create(firstPlayer));
         assertEquals(countOfDocumentBeforeCreation + 1, playerRepo.getDocumentsCount());
