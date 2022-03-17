@@ -94,36 +94,54 @@ public class PlayerIntegrationTests {
     @Test
     @DisplayName("Second player has been deleted")
     void checkPlayerRemoval() {
-        Optional<Player> createdPlayer = playerRepo.create(secondPlayer);
-        assertTrue(createdPlayer.isPresent());
-        secondPlayer = createdPlayer.get();
+        secondPlayer = create(secondPlayer);
         long countOfDocumentBeforeRemoval = playerRepo.getDocumentsCount();
         assertEquals(1, playerRepo.delete(secondPlayer.getId()).getDeletedCount());
         assertEquals(countOfDocumentBeforeRemoval - 1, playerRepo.getDocumentsCount());
     }
 
     @Test
-    @DisplayName("Third player has been found")
-    void checkPlayerFinding() {
-        Optional<Player> createdPlayer = playerRepo.create(thirdPlayer);
-        assertTrue(createdPlayer.isPresent());
-        thirdPlayer = createdPlayer.get();
+    @DisplayName("Third player has been found by id")
+    void checkPlayerFindingById() {
+        thirdPlayer = create(thirdPlayer);
         Optional<Player> foundedPlayer = playerRepo.findById(thirdPlayer.getId());
         assertTrue(foundedPlayer.isPresent());
         assertEquals(thirdPlayer, foundedPlayer.get());
     }
 
     @Test
+    @DisplayName("Third player has been found by surname and name")
+    void checkPlayerFindingBySurnameAndName() {
+        thirdPlayer = create(thirdPlayer);
+        Optional<Player> foundedPlayer = playerRepo.findBySurnameAndName(thirdPlayer.getSurname(), thirdPlayer.getName());
+        assertTrue(foundedPlayer.isPresent());
+        assertEquals(thirdPlayer, foundedPlayer.get());
+    }
+
+    @Test
+    @DisplayName("Third player has been found by currentClub")
+    void checkPlayerFinding() {
+        thirdPlayer = create(thirdPlayer);
+        List<Player> players = playerRepo.findByCurrentClub(thirdPlayer.getCurrentClub());
+        assertEquals(1, players.size());
+        assertEquals(thirdPlayer, players.get(0));
+    }
+
+    @Test
     @DisplayName("Fourth player has been updated")
     void checkPlayerUpdating() {
-        Optional<Player> createdPlayer = playerRepo.create(fourthPlayer);
-        assertTrue(createdPlayer.isPresent());
-        fourthPlayer = createdPlayer.get();
+        fourthPlayer = create(fourthPlayer);
         fourthPlayer.setAge(32);
         assertEquals(1, playerRepo.update(fourthPlayer).getModifiedCount());
         Optional<Player> foundedPlayer = playerRepo.findById(fourthPlayer.getId());
         assertTrue(foundedPlayer.isPresent());
         assertEquals(fourthPlayer, foundedPlayer.get());
+    }
+
+    private Player create(Player player) {
+        Optional<Player> createdPlayer = playerRepo.create(player);
+        assertTrue(createdPlayer.isPresent());
+        return createdPlayer.get();
     }
 
     @AfterAll
