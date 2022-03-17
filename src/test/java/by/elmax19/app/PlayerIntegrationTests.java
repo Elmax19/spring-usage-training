@@ -120,7 +120,7 @@ public class PlayerIntegrationTests {
 
     @Test
     @DisplayName("Third player has been found by currentClub")
-    void checkPlayerFinding() {
+    void checkPlayerFindingByCurrentClub() {
         thirdPlayer = create(thirdPlayer);
         List<Player> players = playerRepo.findByCurrentClub(thirdPlayer.getCurrentClub());
         assertEquals(1, players.size());
