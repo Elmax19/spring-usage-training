@@ -1,17 +1,25 @@
 package by.elmax19.app.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.bson.types.ObjectId;
 
 import java.util.List;
 
-@Data
+@EqualsAndHashCode
+@Builder
+@Getter
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Player {
     private ObjectId id;
     private String surname;
     private String name;
+    @Setter
     private Integer age;
     private Double height;
     private Integer spike;
@@ -20,20 +28,6 @@ public class Player {
     private String currentClub;
     private Integer number;
     private List<String> nationalities;
-
-    public Player(String surname, String name, Integer age, Double height, Integer spike, Integer block, Position position, String currentClub, Integer number, List<String> nationality) {
-        this.id = new ObjectId();
-        this.surname = surname;
-        this.name = name;
-        this.age = age;
-        this.height = height;
-        this.spike = spike;
-        this.block = block;
-        this.position = position;
-        this.currentClub = currentClub;
-        this.number = number;
-        this.nationalities = nationality;
-    }
 
     @Override
     public String toString() {

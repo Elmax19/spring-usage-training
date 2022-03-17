@@ -19,6 +19,7 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok:1.18.22'
 	implementation group: 'org.mongodb', name: 'mongo-java-driver', version: '3.12.10'
 	implementation group: "de.flapdoodle.embed", name: "de.flapdoodle.embed.mongo"
+	implementation group: "com.fasterxml.jackson.core", name: "jackson-databind"
 }
 
 tasks.named('test') {

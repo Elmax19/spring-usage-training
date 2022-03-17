@@ -3,8 +3,9 @@ package by.elmax19.app.repository.impl;
 import by.elmax19.app.model.Player;
 import by.elmax19.app.model.Position;
 import by.elmax19.app.repository.CommonRepo;
-import by.elmax19.app.service.DatabaseService;
+import by.elmax19.app.util.ObjectToJsonConverter;
 import com.mongodb.BasicDBObject;
+import com.mongodb.Block;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
@@ -12,68 +13,81 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
-import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
+import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Updates.combine;
 import static com.mongodb.client.model.Updates.set;
 
 @Repository
-public class PlayerRepo implements CommonRepo<Player> {
+public class PlayerRepo implements CommonRepo<Player, ObjectId> {
     @Autowired
-    private DatabaseService databaseService;
-    private MongoCollection<Document> collection;
-    @Value("${mongodb.database.collections.players-collection.name}")
-    private String playerCollectionName;
-
-    @PostConstruct
-    private void initMethod() {
-        collection = databaseService.getCollection(playerCollectionName);
-    }
-
+    private MongoCollection<Document> playersCollection;
+    @Autowired
+    private ObjectToJsonConverter converter;
 
     @Override
     public Optional<Player> findById(ObjectId playerId) {
-        Document playerDocument = collection.find(eq("_id", playerId)).first();
-        return playerDocument == null ? Optional.empty() : Optional.of(convertToEntity(playerDocument));
+        Document playerDocument = playersCollection.find(eq("_id", playerId)).first();
+        return Optional.ofNullable(playerDocument)
+                .map(this::convertToEntity);
+    }
+
+    public Optional<Player> findBySurnameAndName(String surname, String name) {
+        Document playerDocument = playersCollection.
+                find(and(eq("surname", surname),
+                        eq("name", name)))
+                .first();
+        return Optional.ofNullable(playerDocument)
+                .map(this::convertToEntity);
+    }
+
+    public List<Player> findByCurrentClub(String currentClub) {
+        List<Player> players = new ArrayList<>();
+        playersCollection
+                .find(eq("currentClub", currentClub))
+                .forEach((Block<? super Document>) player -> players.add(convertToEntity(player)));
+        return players;
     }
 
     @Override
-    public Player create(Player player) {
+    public Optional<Player> create(Player player) {
         final Document newPlayerDocument = convertToDocument(player);
-        collection.insertOne(newPlayerDocument);
-        return player;
+        playersCollection.insertOne(newPlayerDocument);
+        return findBySurnameAndName(player.getSurname(), player.getName());
     }
 
     @Override
     public UpdateResult update(Player player) {
         Bson filter = eq("_id", player.getId());
         Bson updateOperation = getUpdateOperation(player);
-        return collection.updateOne(filter, updateOperation);
+        return playersCollection.updateOne(filter, updateOperation);
     }
 
     @Override
     public DeleteResult delete(ObjectId playerId) {
         Bson filter = eq("_id", playerId);
-        return collection.deleteOne(filter);
+        return playersCollection.deleteOne(filter);
     }
 
     public void deleteAll() {
-        collection.deleteMany(new BasicDBObject());
+        playersCollection.deleteMany(new BasicDBObject());
     }
 
     @Override
     public long getDocumentsCount() {
-        return collection.countDocuments();
+        return playersCollection.countDocuments();
     }
 
     @Override
     public Document convertToDocument(Player player) {
-        return Document.parse(player.toString());
+        String playerJsonData = converter.convert(player);
+        return Document.parse(playerJsonData);
     }
 
     @Override

@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
@@ -23,9 +22,9 @@ public class PlayerIntegrationTests {
     @Autowired
     private PlayerRepo playerRepoBean;
     private final Player firstPlayer;
-    private final Player secondPlayer;
-    private final Player thirdPlayer;
-    private final Player fourthPlayer;
+    private Player secondPlayer;
+    private Player thirdPlayer;
+    private Player fourthPlayer;
 
     @PostConstruct
     private void init() {
@@ -33,64 +32,71 @@ public class PlayerIntegrationTests {
     }
 
     public PlayerIntegrationTests() {
-        this.firstPlayer = new Player(
-                "Rezende",
-                "Bruno",
-                35,
-                1.90,
-                323,
-                302,
-                Position.SETTER,
-                "Azimut Modena",
-                1,
-                List.of("Brazilian"));
-        this.secondPlayer = new Player(
-                "Mikhaylov",
-                "Maxim",
-                33,
-                2.02,
-                360,
-                340,
-                Position.OPPOSITE_HITTER,
-                "Zenit Kazan",
-                18,
-                List.of("Russian"));
-        this.thirdPlayer = new Player(
-                "Wilfredo",
-                "Leon",
-                28,
-                2.02,
-                380,
-                346,
-                Position.OUTSIDE_HITTER,
-                "Sir Safety Perugia",
-                9,
-                List.of("Cuban", "Polish"));
-        this.fourthPlayer = new Player(
-                "N'Gapeth",
-                "Earvin",
-                31,
-                1.94,
-                358,
-                327,
-                Position.OUTSIDE_HITTER,
-                "Modena Volley",
-                9,
-                List.of("French"));
+        this.firstPlayer = Player.builder()
+                .surname("Rezende")
+                .name("Bruno")
+                .age(35)
+                .height(1.90)
+                .spike(323)
+                .block(302)
+                .position(Position.SETTER)
+                .currentClub("Azimut Modena")
+                .number(1)
+                .nationalities(List.of("Brazilian"))
+                .build();
+        this.secondPlayer = Player.builder()
+                .surname("Mikhaylov")
+                .name("Maxim")
+                .age(33)
+                .height(2.02)
+                .spike(360)
+                .block(340)
+                .position(Position.OPPOSITE_HITTER)
+                .currentClub("Zenit Kazan")
+                .number(18)
+                .nationalities(List.of("Russian"))
+                .build();
+        this.thirdPlayer = Player.builder()
+                .surname("Wilfredo")
+                .name("Leon")
+                .age(28)
+                .height(2.02)
+                .spike(380)
+                .block(346)
+                .position(Position.OUTSIDE_HITTER)
+                .currentClub("Sir Safety Perugia")
+                .number(9)
+                .nationalities(List.of("Cuban", "Polish"))
+                .build();
+        this.fourthPlayer = Player.builder()
+                .surname("N'Gapeth")
+                .name("Earvin")
+                .age(31)
+                .height(1.94)
+                .spike(358)
+                .block(327)
+                .position(Position.OUTSIDE_HITTER)
+                .currentClub("Modena Volley")
+                .number(9)
+                .nationalities(List.of("French"))
+                .build();
     }
 
     @Test
     @DisplayName("First player has been added")
     void checkPlayerCreation() {
         long countOfDocumentBeforeCreation = playerRepo.getDocumentsCount();
-        assertEquals(firstPlayer, playerRepo.create(firstPlayer));
+        Optional<Player> newPlayer = playerRepo.create(firstPlayer);
+        assertTrue(newPlayer.isPresent());
         assertEquals(countOfDocumentBeforeCreation + 1, playerRepo.getDocumentsCount());
     }
 
     @Test
     @DisplayName("Second player has been deleted")
     void checkPlayerRemoval() {
-        assertNotNull(playerRepo.create(secondPlayer));
+        Optional<Player> createdPlayer = playerRepo.create(secondPlayer);
+        assertTrue(createdPlayer.isPresent());
+        secondPlayer = createdPlayer.get();
         long countOfDocumentBeforeRemoval = playerRepo.getDocumentsCount();
         assertEquals(1, playerRepo.delete(secondPlayer.getId()).getDeletedCount());
         assertEquals(countOfDocumentBeforeRemoval - 1, playerRepo.getDocumentsCount());
@@ -99,7 +105,9 @@ public class PlayerIntegrationTests {
     @Test
     @DisplayName("Third player has been found")
     void checkPlayerFinding() {
-        assertNotNull(playerRepo.create(thirdPlayer));
+        Optional<Player> createdPlayer = playerRepo.create(thirdPlayer);
+        assertTrue(createdPlayer.isPresent());
+        thirdPlayer = createdPlayer.get();
         Optional<Player> foundedPlayer = playerRepo.findById(thirdPlayer.getId());
         assertTrue(foundedPlayer.isPresent());
         assertEquals(thirdPlayer, foundedPlayer.get());
@@ -108,7 +116,9 @@ public class PlayerIntegrationTests {
     @Test
     @DisplayName("Fourth player has been updated")
     void checkPlayerUpdating() {
-        assertNotNull(playerRepo.create(fourthPlayer));
+        Optional<Player> createdPlayer = playerRepo.create(fourthPlayer);
+        assertTrue(createdPlayer.isPresent());
+        fourthPlayer = createdPlayer.get();
         fourthPlayer.setAge(32);
         assertEquals(1, playerRepo.update(fourthPlayer).getModifiedCount());
         Optional<Player> foundedPlayer = playerRepo.findById(fourthPlayer.getId());

@@ -7,10 +7,10 @@ import org.bson.types.ObjectId;
 
 import java.util.Optional;
 
-public interface CommonRepo<T> {
-    Optional<T> findById(ObjectId id);
+public interface CommonRepo<T, K> {
+    Optional<T> findById(K id);
 
-    T create(T entity);
+    Optional<T> create(T entity);
 
     UpdateResult update(T entity);
 
