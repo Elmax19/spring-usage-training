@@ -28,26 +28,4 @@ public class Player {
     private String currentClub;
     private Integer number;
     private List<String> nationalities;
-
-    @Override
-    public String toString() {
-        StringBuilder nationalitiesList = new StringBuilder();
-        for (String nationality : nationalities) {
-            nationalitiesList.append('\"').append(nationality).append('\"').append(',');
-        }
-        nationalitiesList.setLength(nationalitiesList.length() - 1);
-        return "{" +
-                "\"_id\": ObjectId(\"" + id + "\")," +
-                "\"surname\": \"" + surname + "\"," +
-                "\"name\": \"" + name + "\"," +
-                "\"age\": " + age + ',' +
-                "\"height\": " + height + ',' +
-                "\"spike\": " + spike + ',' +
-                "\"block\": " + block + ',' +
-                "\"position\": \"" + position.name() + "\"," +
-                "\"currentClub\": \"" + currentClub + "\"," +
-                "\"number\": " + number + ',' +
-                "\"nationalities\": [" + nationalitiesList + ']' +
-                '}';
-    }
 }
