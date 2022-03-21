@@ -123,12 +123,6 @@ public class PlayerIntegrationTests {
         assertEquals(countOfDocumentBeforeCreation + 1, playerRepo.count());
     }
 
-//    @Test
-//    void test() {
-//        playerRepo.findAll().forEach(System.out::println);
-//        System.out.println(playerRepo.findById("62382e6bd057fd713e9b50e9"));
-//    }
-
     @Test
     @DisplayName("Second player has been deleted")
     void checkPlayerRemoval() {
