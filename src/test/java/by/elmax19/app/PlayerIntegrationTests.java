@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataMongoTest
@@ -37,7 +36,7 @@ public class PlayerIntegrationTests {
 
     public PlayerIntegrationTests() {
         firstPlayer = Player.builder()
-                .id(new ObjectId().toString())
+                .id(new ObjectId())
                 .surname("Rezende")
                 .name("Bruno")
                 .age(35)
@@ -50,6 +49,7 @@ public class PlayerIntegrationTests {
                 .nationalities(List.of("Brazilian"))
                 .build();
         secondPlayer = Player.builder()
+                .id(new ObjectId())
                 .surname("Mikhaylov")
                 .name("Maxim")
                 .age(33)
@@ -62,6 +62,7 @@ public class PlayerIntegrationTests {
                 .nationalities(List.of("Russian"))
                 .build();
         thirdPlayer = Player.builder()
+                .id(new ObjectId())
                 .surname("Wilfredo")
                 .name("Leon")
                 .age(28)
@@ -74,6 +75,7 @@ public class PlayerIntegrationTests {
                 .nationalities(List.of("Cuban", "Polish"))
                 .build();
         fourthPlayer = Player.builder()
+                .id(new ObjectId())
                 .surname("Robertlandy")
                 .name("Simon")
                 .age(34)
@@ -86,6 +88,7 @@ public class PlayerIntegrationTests {
                 .nationalities(List.of("Cuban"))
                 .build();
         fifthPlayer = Player.builder()
+                .id(new ObjectId())
                 .surname("Abdel-Aziz")
                 .name("Nimir")
                 .age(30)
@@ -98,6 +101,7 @@ public class PlayerIntegrationTests {
                 .nationalities(List.of("Dutch"))
                 .build();
         sixthPlayer = Player.builder()
+                .id(new ObjectId())
                 .surname("N'Gapeth")
                 .name("Earvin")
                 .age(31)
