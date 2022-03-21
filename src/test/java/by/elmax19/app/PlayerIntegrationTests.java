@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataMongoTest
@@ -118,6 +119,12 @@ public class PlayerIntegrationTests {
         assertEquals(countOfDocumentBeforeCreation + 1, playerRepo.count());
     }
 
+//    @Test
+//    void test() {
+//        playerRepo.findAll().forEach(System.out::println);
+//        System.out.println(playerRepo.findById("62382e6bd057fd713e9b50e9"));
+//    }
+
     @Test
     @DisplayName("Second player has been deleted")
     void checkPlayerRemoval() {
@@ -132,8 +139,9 @@ public class PlayerIntegrationTests {
     void checkPlayerFindingById() {
         thirdPlayer = playerRepo.save(thirdPlayer);
         playerRepo.findAll().forEach(player -> System.out.println(player.toString()));
-        Player foundedPlayer = playerRepo.findPlayerById(thirdPlayer.getId());
-        assertEquals(thirdPlayer, foundedPlayer);
+        Optional<Player> foundedPlayer = playerRepo.findById(thirdPlayer.getId());
+        assertTrue(foundedPlayer.isPresent());
+        assertEquals(thirdPlayer, foundedPlayer.get());
     }
 
     @Test
