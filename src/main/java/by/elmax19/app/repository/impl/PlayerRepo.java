@@ -84,14 +84,12 @@ public class PlayerRepo implements CommonRepo<Player, ObjectId> {
         return playersCollection.countDocuments();
     }
 
-    @Override
-    public Document convertToDocument(Player player) {
+    private Document convertToDocument(Player player) {
         String playerJsonData = converter.convert(player);
         return Document.parse(playerJsonData);
     }
 
-    @Override
-    public Player convertToEntity(Document entityDocument) {
+    private Player convertToEntity(Document entityDocument) {
         return new Player(
                 entityDocument.getObjectId("_id"),
                 entityDocument.getString("surname"),

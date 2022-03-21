@@ -16,9 +16,5 @@ public interface CommonRepo<T, K> {
 
     DeleteResult delete(ObjectId id);
 
-    Document convertToDocument(T entity);
-
-    T convertToEntity(Document document);
-
     long getDocumentsCount();
 }
