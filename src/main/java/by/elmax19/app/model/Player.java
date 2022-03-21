@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
 @EqualsAndHashCode
 @Builder
 @Getter
+@Document(collection = "players")
 public class Player {
     @MongoId
     private String id;
