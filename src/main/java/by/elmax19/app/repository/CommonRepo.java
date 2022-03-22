@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface CommonRepo<T, K> {
     Optional<T> findById(K id);
 
-    Optional<T> create(T entity);
+    void create(T entity);
 
     UpdateResult update(T entity);
 

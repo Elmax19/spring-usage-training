@@ -60,13 +60,9 @@ public class PlayerRepo implements CommonRepo<Player, ObjectId> {
     }
 
     @Override
-    public Optional<Player> create(Player player) {
+    public void create(Player player) {
         final Optional<Document> newPlayerDocument = convertToDocument(player);
-        if (newPlayerDocument.isPresent()) {
-            playersCollection.insertOne(newPlayerDocument.get());
-            return findBySurnameAndName(player.getSurname(), player.getName());
-        }
-        return Optional.empty();
+        newPlayerDocument.ifPresent(document -> playersCollection.insertOne(document));
     }
 
     @Override

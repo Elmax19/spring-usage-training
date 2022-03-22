@@ -54,7 +54,7 @@ public class PlayerIntegrationTests {
     @Test
     @DisplayName("Player has been deleted")
     void checkPlayerRemoval() {
-        Player player = Player.builder()
+        Player player = create(Player.builder()
                 .surname("Mikhaylov")
                 .name("Maxim")
                 .age(33)
@@ -65,8 +65,7 @@ public class PlayerIntegrationTests {
                 .currentClub("Zenit Kazan")
                 .number(18)
                 .nationalities(List.of("Russian"))
-                .build();
-        player = create(player);
+                .build());
         long countOfDocumentBeforeRemoval = playerRepo.getDocumentsCount();
         assertEquals(1, playerRepo.delete(player.getId()).getDeletedCount());
         assertEquals(countOfDocumentBeforeRemoval - 1, playerRepo.getDocumentsCount());
@@ -75,7 +74,7 @@ public class PlayerIntegrationTests {
     @Test
     @DisplayName("Player has been found by id")
     void checkPlayerFindingById() {
-        Player player = Player.builder()
+        Player player = create(Player.builder()
                 .id(new ObjectId())
                 .surname("Wilfredo")
                 .name("Leon")
@@ -87,8 +86,7 @@ public class PlayerIntegrationTests {
                 .currentClub("Sir Safety Perugia")
                 .number(9)
                 .nationalities(List.of("Cuban", "Polish"))
-                .build();
-        player = create(player);
+                .build());
         Optional<Player> foundedPlayer = playerRepo.findById(player.getId());
         assertTrue(foundedPlayer.isPresent());
         assertEquals(player, foundedPlayer.get());
@@ -97,7 +95,7 @@ public class PlayerIntegrationTests {
     @Test
     @DisplayName("Player has been found by surname and name")
     void checkPlayerFindingBySurnameAndName() {
-        Player player = Player.builder()
+        Player player = create(Player.builder()
                 .surname("Wilfredo")
                 .name("Leon")
                 .age(28)
@@ -108,8 +106,7 @@ public class PlayerIntegrationTests {
                 .currentClub("Sir Safety Perugia")
                 .number(9)
                 .nationalities(List.of("Cuban", "Polish"))
-                .build();
-        player = create(player);
+                .build());
         Optional<Player> foundedPlayer = playerRepo.findBySurnameAndName(player.getSurname(), player.getName());
         assertTrue(foundedPlayer.isPresent());
         assertEquals(player, foundedPlayer.get());
@@ -118,7 +115,7 @@ public class PlayerIntegrationTests {
     @Test
     @DisplayName("Player has been found by currentClub")
     void checkPlayerFindingByCurrentClub() {
-        Player player = Player.builder()
+        Player player = create(Player.builder()
                 .surname("N'Gapeth")
                 .name("Earvin")
                 .age(31)
@@ -129,8 +126,7 @@ public class PlayerIntegrationTests {
                 .currentClub("Modena Volley")
                 .number(9)
                 .nationalities(List.of("French"))
-                .build();
-        player = create(player);
+                .build());
         List<Player> players = playerRepo.findByCurrentClub(player.getCurrentClub());
         assertEquals(1, players.size());
         assertEquals(player, players.get(0));
@@ -139,7 +135,7 @@ public class PlayerIntegrationTests {
     @Test
     @DisplayName("Player has been updated")
     void checkPlayerUpdating() {
-        Player player = Player.builder()
+        Player player = create(Player.builder()
                 .surname("N'Gapeth")
                 .name("Earvin")
                 .age(31)
@@ -150,8 +146,7 @@ public class PlayerIntegrationTests {
                 .currentClub("Modena Volley")
                 .number(9)
                 .nationalities(List.of("French"))
-                .build();
-        player = create(player);
+                .build());
         player.setAge(32);
         assertEquals(1, playerRepo.update(player).getModifiedCount());
         Optional<Player> foundedPlayer = playerRepo.findById(player.getId());
@@ -160,7 +155,8 @@ public class PlayerIntegrationTests {
     }
 
     private Player create(Player player) {
-        Optional<Player> createdPlayer = playerRepo.create(player);
+        playerRepo.create(player);
+        Optional<Player> createdPlayer = playerRepo.findBySurnameAndName(player.getSurname(), player.getName());
         assertTrue(createdPlayer.isPresent());
         return createdPlayer.get();
     }
