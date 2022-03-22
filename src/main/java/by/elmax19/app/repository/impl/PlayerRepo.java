@@ -5,19 +5,22 @@ import by.elmax19.app.model.Position;
 import by.elmax19.app.repository.CommonRepo;
 import by.elmax19.app.util.ObjectToJsonConverter;
 import com.mongodb.BasicDBObject;
-import com.mongodb.Block;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.Spliterator;
+import java.util.stream.StreamSupport;
 
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
@@ -30,6 +33,7 @@ public class PlayerRepo implements CommonRepo<Player, ObjectId> {
     private MongoCollection<Document> playersCollection;
     @Autowired
     private ObjectToJsonConverter converter;
+    private static final Logger LOGGER = LogManager.getLogger(PlayerRepo.class);
 
     @Override
     public Optional<Player> findById(ObjectId playerId) {
@@ -48,18 +52,21 @@ public class PlayerRepo implements CommonRepo<Player, ObjectId> {
     }
 
     public List<Player> findByCurrentClub(String currentClub) {
-        List<Player> players = new ArrayList<>();
-        playersCollection
-                .find(eq("currentClub", currentClub))
-                .forEach((Block<? super Document>) player -> players.add(convertToEntity(player)));
-        return players;
+        Spliterator<Document> players = playersCollection
+                .find(eq("currentClub", currentClub)).spliterator();
+        return StreamSupport.stream(players, false)
+                .map(this::convertToEntity)
+                .toList();
     }
 
     @Override
     public Optional<Player> create(Player player) {
-        final Document newPlayerDocument = convertToDocument(player);
-        playersCollection.insertOne(newPlayerDocument);
-        return findBySurnameAndName(player.getSurname(), player.getName());
+        final Optional<Document> newPlayerDocument = convertToDocument(player);
+        if (newPlayerDocument.isPresent()) {
+            playersCollection.insertOne(newPlayerDocument.get());
+            return findBySurnameAndName(player.getSurname(), player.getName());
+        }
+        return Optional.empty();
     }
 
     @Override
@@ -75,6 +82,7 @@ public class PlayerRepo implements CommonRepo<Player, ObjectId> {
         return playersCollection.deleteOne(filter);
     }
 
+    @Override
     public void deleteAll() {
         playersCollection.deleteMany(new BasicDBObject());
     }
@@ -84,9 +92,14 @@ public class PlayerRepo implements CommonRepo<Player, ObjectId> {
         return playersCollection.countDocuments();
     }
 
-    private Document convertToDocument(Player player) {
-        String playerJsonData = converter.convert(player);
-        return Document.parse(playerJsonData);
+    private Optional<Document> convertToDocument(Player player) {
+        try {
+            String playerJsonData = converter.convert(player);
+            return Optional.of(Document.parse(playerJsonData));
+        } catch (IOException e) {
+            LOGGER.error("Error while trying to parse Player into JSON: " + e.getLocalizedMessage());
+        }
+        return Optional.empty();
     }
 
     private Player convertToEntity(Document entityDocument) {

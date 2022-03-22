@@ -8,14 +8,9 @@ import java.io.IOException;
 
 @Component
 public class ObjectToJsonConverter {
-    public String convert(Object object){
+    public String convert(Object object) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
-        try {
-            return mapper.writeValueAsString(object);
-        }
-        catch (IOException e) {
-            return null;
-        }
+        return mapper.writeValueAsString(object);
     }
 }

@@ -2,7 +2,6 @@ package by.elmax19.app.repository;
 
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
-import org.bson.Document;
 import org.bson.types.ObjectId;
 
 import java.util.Optional;
@@ -15,6 +14,8 @@ public interface CommonRepo<T, K> {
     UpdateResult update(T entity);
 
     DeleteResult delete(ObjectId id);
+
+    void deleteAll();
 
     long getDocumentsCount();
 }

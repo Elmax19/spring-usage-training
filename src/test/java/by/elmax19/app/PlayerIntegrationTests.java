@@ -3,6 +3,7 @@ package by.elmax19.app;
 import by.elmax19.app.model.Player;
 import by.elmax19.app.model.Position;
 import by.elmax19.app.repository.impl.PlayerRepo;
+import org.bson.types.ObjectId;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,10 +22,6 @@ public class PlayerIntegrationTests {
     private static PlayerRepo playerRepo;
     @Autowired
     private PlayerRepo playerRepoBean;
-    private final Player firstPlayer;
-    private Player secondPlayer;
-    private Player thirdPlayer;
-    private Player fourthPlayer;
 
     @PostConstruct
     private void init() {
@@ -32,7 +29,12 @@ public class PlayerIntegrationTests {
     }
 
     public PlayerIntegrationTests() {
-        this.firstPlayer = Player.builder()
+    }
+
+    @Test
+    @DisplayName("Player has been added")
+    void checkPlayerCreation() {
+        Player player = Player.builder()
                 .surname("Rezende")
                 .name("Bruno")
                 .age(35)
@@ -44,7 +46,15 @@ public class PlayerIntegrationTests {
                 .number(1)
                 .nationalities(List.of("Brazilian"))
                 .build();
-        this.secondPlayer = Player.builder()
+        long countOfDocumentBeforeCreation = playerRepo.getDocumentsCount();
+        create(player);
+        assertEquals(countOfDocumentBeforeCreation + 1, playerRepo.getDocumentsCount());
+    }
+
+    @Test
+    @DisplayName("Player has been deleted")
+    void checkPlayerRemoval() {
+        Player player = Player.builder()
                 .surname("Mikhaylov")
                 .name("Maxim")
                 .age(33)
@@ -56,7 +66,17 @@ public class PlayerIntegrationTests {
                 .number(18)
                 .nationalities(List.of("Russian"))
                 .build();
-        this.thirdPlayer = Player.builder()
+        player = create(player);
+        long countOfDocumentBeforeRemoval = playerRepo.getDocumentsCount();
+        assertEquals(1, playerRepo.delete(player.getId()).getDeletedCount());
+        assertEquals(countOfDocumentBeforeRemoval - 1, playerRepo.getDocumentsCount());
+    }
+
+    @Test
+    @DisplayName("Player has been found by id")
+    void checkPlayerFindingById() {
+        Player player = Player.builder()
+                .id(new ObjectId())
                 .surname("Wilfredo")
                 .name("Leon")
                 .age(28)
@@ -68,7 +88,37 @@ public class PlayerIntegrationTests {
                 .number(9)
                 .nationalities(List.of("Cuban", "Polish"))
                 .build();
-        this.fourthPlayer = Player.builder()
+        player = create(player);
+        Optional<Player> foundedPlayer = playerRepo.findById(player.getId());
+        assertTrue(foundedPlayer.isPresent());
+        assertEquals(player, foundedPlayer.get());
+    }
+
+    @Test
+    @DisplayName("Player has been found by surname and name")
+    void checkPlayerFindingBySurnameAndName() {
+        Player player = Player.builder()
+                .surname("Wilfredo")
+                .name("Leon")
+                .age(28)
+                .height(2.02)
+                .spike(380)
+                .block(346)
+                .position(Position.OUTSIDE_HITTER)
+                .currentClub("Sir Safety Perugia")
+                .number(9)
+                .nationalities(List.of("Cuban", "Polish"))
+                .build();
+        player = create(player);
+        Optional<Player> foundedPlayer = playerRepo.findBySurnameAndName(player.getSurname(), player.getName());
+        assertTrue(foundedPlayer.isPresent());
+        assertEquals(player, foundedPlayer.get());
+    }
+
+    @Test
+    @DisplayName("Player has been found by currentClub")
+    void checkPlayerFindingByCurrentClub() {
+        Player player = Player.builder()
                 .surname("N'Gapeth")
                 .name("Earvin")
                 .age(31)
@@ -80,62 +130,33 @@ public class PlayerIntegrationTests {
                 .number(9)
                 .nationalities(List.of("French"))
                 .build();
-    }
-
-    @Test
-    @DisplayName("First player has been added")
-    void checkPlayerCreation() {
-        long countOfDocumentBeforeCreation = playerRepo.getDocumentsCount();
-        Optional<Player> newPlayer = playerRepo.create(firstPlayer);
-        assertTrue(newPlayer.isPresent());
-        assertEquals(countOfDocumentBeforeCreation + 1, playerRepo.getDocumentsCount());
-    }
-
-    @Test
-    @DisplayName("Second player has been deleted")
-    void checkPlayerRemoval() {
-        secondPlayer = create(secondPlayer);
-        long countOfDocumentBeforeRemoval = playerRepo.getDocumentsCount();
-        assertEquals(1, playerRepo.delete(secondPlayer.getId()).getDeletedCount());
-        assertEquals(countOfDocumentBeforeRemoval - 1, playerRepo.getDocumentsCount());
-    }
-
-    @Test
-    @DisplayName("Third player has been found by id")
-    void checkPlayerFindingById() {
-        thirdPlayer = create(thirdPlayer);
-        Optional<Player> foundedPlayer = playerRepo.findById(thirdPlayer.getId());
-        assertTrue(foundedPlayer.isPresent());
-        assertEquals(thirdPlayer, foundedPlayer.get());
-    }
-
-    @Test
-    @DisplayName("Third player has been found by surname and name")
-    void checkPlayerFindingBySurnameAndName() {
-        thirdPlayer = create(thirdPlayer);
-        Optional<Player> foundedPlayer = playerRepo.findBySurnameAndName(thirdPlayer.getSurname(), thirdPlayer.getName());
-        assertTrue(foundedPlayer.isPresent());
-        assertEquals(thirdPlayer, foundedPlayer.get());
-    }
-
-    @Test
-    @DisplayName("Forth player has been found by currentClub")
-    void checkPlayerFindingByCurrentClub() {
-        fourthPlayer = create(fourthPlayer);
-        List<Player> players = playerRepo.findByCurrentClub(fourthPlayer.getCurrentClub());
+        player = create(player);
+        List<Player> players = playerRepo.findByCurrentClub(player.getCurrentClub());
         assertEquals(1, players.size());
-        assertEquals(fourthPlayer, players.get(0));
+        assertEquals(player, players.get(0));
     }
 
     @Test
-    @DisplayName("Fourth player has been updated")
+    @DisplayName("Player has been updated")
     void checkPlayerUpdating() {
-        fourthPlayer = create(fourthPlayer);
-        fourthPlayer.setAge(32);
-        assertEquals(1, playerRepo.update(fourthPlayer).getModifiedCount());
-        Optional<Player> foundedPlayer = playerRepo.findById(fourthPlayer.getId());
+        Player player = Player.builder()
+                .surname("N'Gapeth")
+                .name("Earvin")
+                .age(31)
+                .height(1.94)
+                .spike(358)
+                .block(327)
+                .position(Position.OUTSIDE_HITTER)
+                .currentClub("Modena Volley")
+                .number(9)
+                .nationalities(List.of("French"))
+                .build();
+        player = create(player);
+        player.setAge(32);
+        assertEquals(1, playerRepo.update(player).getModifiedCount());
+        Optional<Player> foundedPlayer = playerRepo.findById(player.getId());
         assertTrue(foundedPlayer.isPresent());
-        assertEquals(fourthPlayer, foundedPlayer.get());
+        assertEquals(player, foundedPlayer.get());
     }
 
     private Player create(Player player) {
