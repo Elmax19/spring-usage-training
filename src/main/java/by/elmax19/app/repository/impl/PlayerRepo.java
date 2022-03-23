@@ -1,5 +1,6 @@
 package by.elmax19.app.repository.impl;
 
+import by.elmax19.app.exception.ParsingJsonException;
 import by.elmax19.app.model.Player;
 import by.elmax19.app.model.Position;
 import by.elmax19.app.repository.CommonRepo;
@@ -8,6 +9,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
@@ -27,13 +29,13 @@ import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Updates.combine;
 import static com.mongodb.client.model.Updates.set;
 
+@Slf4j
 @Repository
 public class PlayerRepo implements CommonRepo<Player, ObjectId> {
     @Autowired
     private MongoCollection<Document> playersCollection;
     @Autowired
     private ObjectToJsonConverter converter;
-    private static final Logger LOGGER = LogManager.getLogger(PlayerRepo.class);
 
     @Override
     public Optional<Player> findById(ObjectId playerId) {
@@ -60,7 +62,7 @@ public class PlayerRepo implements CommonRepo<Player, ObjectId> {
     }
 
     @Override
-    public void create(Player player) {
+    public void create(Player player) throws ParsingJsonException {
         final Optional<Document> newPlayerDocument = convertToDocument(player);
         newPlayerDocument.ifPresent(document -> playersCollection.insertOne(document));
     }
@@ -93,9 +95,9 @@ public class PlayerRepo implements CommonRepo<Player, ObjectId> {
             String playerJsonData = converter.convert(player);
             return Optional.of(Document.parse(playerJsonData));
         } catch (IOException e) {
-            LOGGER.error("Error while trying to parse Player into JSON: " + e.getLocalizedMessage());
+            log.error("Error while trying to parse Player into JSON: " + e.getLocalizedMessage());
+            throw new ParsingJsonException("Can't parse Player: " + player.toString());
         }
-        return Optional.empty();
     }
 
     private Player convertToEntity(Document entityDocument) {
