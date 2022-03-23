@@ -18,7 +18,7 @@ dependencies {
 	testImplementation group: 'org.jeasy', name: 'easy-random-core', version: '4.0.0'
 	compileOnly 'org.projectlombok:lombok:1.18.22'
 	annotationProcessor 'org.projectlombok:lombok:1.18.22'
-	implementation group: "de.flapdoodle.embed", name: "de.flapdoodle.embed.mongo"
+	testImplementation group: "de.flapdoodle.embed", name: "de.flapdoodle.embed.mongo"
 	implementation group: "com.fasterxml.jackson.core", name: "jackson-databind"
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-mongodb'
 	implementation group: 'org.apache.commons', name: 'commons-lang3'
