@@ -17,7 +17,9 @@ import java.util.List;
 public class Player {
     @MongoId
     private ObjectId id;
+    @Setter
     private String surname;
+    @Setter
     private String name;
     @Setter
     private Integer age;
@@ -25,6 +27,7 @@ public class Player {
     private Integer spike;
     private Integer block;
     private Position position;
+    @Setter
     private String currentClub;
     private Integer number;
     private List<String> nationalities;
