@@ -7,17 +7,16 @@ import by.elmax19.app.repository.SqlPlayerRepository;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 
 @Service
 public record MigrationService(SqlPlayerRepository sqlPlayerRepository, MongoPlayerRepository mongoPlayerRepository) {
     public void migrateSqlDataToMongo() {
-        sqlPlayerRepository.findAll().stream()
+        List<MongoPlayer> players = sqlPlayerRepository.findAll().stream()
                 .map(this::parseSqlPlayerToMongo)
-                .forEach(this::migrateSqlPlayerToMongo);
-    }
-
-    private void migrateSqlPlayerToMongo(MongoPlayer mongoPlayer) {
-        mongoPlayerRepository.save(mongoPlayer);
+                .toList();
+        mongoPlayerRepository.saveAll(players);
     }
 
     public MongoPlayer parseSqlPlayerToMongo(SqlPlayer sqlPlayer) {

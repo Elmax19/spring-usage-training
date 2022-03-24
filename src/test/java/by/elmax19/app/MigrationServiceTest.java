@@ -75,7 +75,7 @@ public class MigrationServiceTest {
 
         migrationService.migrateSqlDataToMongo();
 
-        verify(mongoPlayerRepository, times(newPlayers.size())).save(any(MongoPlayer.class));
+        verify(mongoPlayerRepository).saveAll(any());
     }
 
     private SqlPlayer createNewPlayer() {
