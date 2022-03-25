@@ -22,7 +22,6 @@ dependencies {
 	implementation group: 'org.mongodb', name: 'mongo-java-driver', version: '3.12.10'
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-mongodb'
-	implementation group: 'mysql', name: 'mysql-connector-java'
 	compileOnly group: 'org.projectlombok', name: 'lombok'
 	annotationProcessor group: 'org.projectlombok', name: 'lombok'
 }

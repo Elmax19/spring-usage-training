@@ -4,6 +4,7 @@ import by.elmax19.app.model.sql.SqlPlayer;
 import by.elmax19.app.repository.SqlPlayerRepository;
 import org.bson.types.ObjectId;
 import org.jeasy.random.EasyRandom;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,23 +25,19 @@ public class SqlRepositoryTest {
     @Test
     @DisplayName("save() method should insert a new player")
     void checkSaveMethod() {
-        long countBeforeSaving = playerRepository.count();
         SqlPlayer newPlayer = createNewPlayer();
 
         playerRepository.save(newPlayer);
 
-        assertEquals(countBeforeSaving + 1, playerRepository.count());
+        assertEquals(1, playerRepository.count());
         Optional<SqlPlayer> actualPlayer = playerRepository.findById(newPlayer.getId());
         assertTrue(actualPlayer.isPresent());
         assertEquals(newPlayer, actualPlayer.get());
-
-        playerRepository.delete(newPlayer);
     }
 
     @Test
     @DisplayName("findAll() method should return 3 players")
     void checkFindAllMethod() {
-        long countBeforeSaving = playerRepository.count();
         List<SqlPlayer> newPlayers = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             newPlayers.add(createNewPlayer());
@@ -49,10 +46,8 @@ public class SqlRepositoryTest {
 
         List<SqlPlayer> actualPlayers = playerRepository.findAll();
 
-        assertEquals(countBeforeSaving + 3, actualPlayers.size());
+        assertEquals(3, actualPlayers.size());
         assertTrue(actualPlayers.containsAll(newPlayers));
-
-        playerRepository.deleteAll(newPlayers);
     }
 
     @Test
@@ -60,11 +55,10 @@ public class SqlRepositoryTest {
     void checkDeleteMethod() {
         SqlPlayer newPlayer = createNewPlayer();
         playerRepository.save(newPlayer);
-        long countBeforeDeleting = playerRepository.count();
 
         playerRepository.delete(newPlayer);
 
-        assertEquals(countBeforeDeleting - 1, playerRepository.count());
+        assertEquals(0, playerRepository.count());
         Optional<SqlPlayer> actualPlayer = playerRepository.findById(newPlayer.getId());
         assertTrue(actualPlayer.isEmpty());
     }
@@ -74,5 +68,10 @@ public class SqlRepositoryTest {
         SqlPlayer player = generator.nextObject(SqlPlayer.class);
         player.setId(new ObjectId().toString());
         return player;
+    }
+
+    @AfterEach
+    public void cleanUp() {
+        playerRepository.deleteAll();
     }
 }

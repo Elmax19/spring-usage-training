@@ -3,7 +3,7 @@ package by.elmax19.app;
 import by.elmax19.app.model.mongo.MongoPlayer;
 import by.elmax19.app.repository.MongoPlayerRepository;
 import org.jeasy.random.EasyRandom;
-import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -27,9 +27,8 @@ public class MongoRepositoryTest {
     @DisplayName("Player has been added")
     void checkPlayerCreation() {
         MongoPlayer player = createNewPlayer();
-        long countOfDocumentBeforeCreation = playerRepository.count();
         playerRepository.save(player);
-        assertEquals(countOfDocumentBeforeCreation + 1, playerRepository.count());
+        assertEquals(1, playerRepository.count());
     }
 
     @Test
@@ -37,9 +36,8 @@ public class MongoRepositoryTest {
     void checkPlayerRemoval() {
         MongoPlayer player = createNewPlayer();
         playerRepository.save(player);
-        long countOfDocumentBeforeRemoval = playerRepository.count();
         playerRepository.delete(player);
-        assertEquals(countOfDocumentBeforeRemoval - 1, playerRepository.count());
+        assertEquals(0, playerRepository.count());
     }
 
     @Test
@@ -70,13 +68,13 @@ public class MongoRepositoryTest {
         assertTrue(timeOfSaveAllMethod < timeOfSaveMethod);
     }
 
-    @AfterAll
-    public void cleanUp() {
-        playerRepository.deleteAll();
-    }
-
     private MongoPlayer createNewPlayer() {
         EasyRandom generator = new EasyRandom();
         return generator.nextObject(MongoPlayer.class);
+    }
+
+    @AfterEach
+    public void cleanUp() {
+        playerRepository.deleteAll();
     }
 }
