@@ -71,7 +71,7 @@ public class PlayerIntegrationTests {
         secondPlayer.setCurrentClub("Club name");
         playerRepo.save(firstPlayer);
         playerRepo.save(secondPlayer);
-        List<Player> players = playerRepo.findPlayersByCurrentClub(firstPlayer.getCurrentClub());
+        List<Player> players = playerRepo.findPlayersByCurrentClubOrderByNumber(firstPlayer.getCurrentClub());
         assertEquals(2, players.size());
         assertTrue(players.contains(firstPlayer) && players.contains(secondPlayer));
     }

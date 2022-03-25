@@ -8,6 +8,7 @@ import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @EqualsAndHashCode
@@ -31,4 +32,5 @@ public class Player {
     private String currentClub;
     private Integer number;
     private List<String> nationalities;
+    private BigDecimal salary;
 }

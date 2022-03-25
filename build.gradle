@@ -22,6 +22,14 @@ dependencies {
 	implementation group: "com.fasterxml.jackson.core", name: "jackson-databind"
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-mongodb'
 	implementation group: 'org.apache.commons', name: 'commons-lang3'
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web'
+	implementation 'org.mapstruct:mapstruct:1.4.2.Final'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.2.Final'
+}
+
+compileJava {
+	options.annotationProcessorPath = configurations.annotationProcessor
+	options.compilerArgs << "-Amapstruct.defaultComponentModel=spring"
 }
 
 tasks.named('test') {
