@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -27,11 +28,12 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class MigrationServiceTest {
     private final List<SqlPlayer> newPlayers = new ArrayList<>();
-    private MigrationService<SqlPlayer, MongoPlayer> migrationService;
     @Mock
     private SqlPlayerRepository sqlPlayerRepository;
     @Mock
     private MongoPlayerRepository mongoPlayerRepository;
+    @InjectMocks
+    private MigrationServiceImpl migrationService;
     @Captor
     private ArgumentCaptor<List<MongoPlayer>> captor;
     private final SqlPlayer sqlPlayer = SqlPlayer.builder()
@@ -68,15 +70,12 @@ public class MigrationServiceTest {
     @Test
     @DisplayName("Player has been parsed from SQL to Mongo correct")
     void checkParsingSqlPlayerToMongo() {
-        migrationService = new MigrationServiceImpl(sqlPlayerRepository, mongoPlayerRepository);
-
         assertEquals(mongoPlayer, migrationService.mapSqlPlayerToMongo(sqlPlayer));
     }
 
     @Test
     @DisplayName("Players have been migrated")
     void checkPlayersMigration() {
-        migrationService = new MigrationServiceImpl(sqlPlayerRepository, mongoPlayerRepository);
         when(sqlPlayerRepository.findAll()).thenReturn(newPlayers);
 
         migrationService.migrateSqlDataToMongo();
