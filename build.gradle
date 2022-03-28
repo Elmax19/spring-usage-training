@@ -12,6 +12,10 @@ repositories {
 	mavenCentral()
 }
 
+ext {
+	mapstructVersion = "1.4.2.Final"
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -23,13 +27,8 @@ dependencies {
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-mongodb'
 	implementation group: 'org.apache.commons', name: 'commons-lang3'
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web'
-	implementation 'org.mapstruct:mapstruct:1.4.2.Final'
-	annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.2.Final'
-}
-
-compileJava {
-	options.annotationProcessorPath = configurations.annotationProcessor
-	options.compilerArgs << "-Amapstruct.defaultComponentModel=spring"
+	compileOnly("org.mapstruct:mapstruct:${mapstructVersion}")
+	annotationProcessor("org.mapstruct:mapstruct-processor:${mapstructVersion}")
 }
 
 tasks.named('test') {

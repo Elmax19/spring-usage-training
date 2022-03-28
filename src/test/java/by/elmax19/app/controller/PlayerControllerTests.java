@@ -37,7 +37,13 @@ public class PlayerControllerTests {
     private MockMvc mockMvc;
 
     @BeforeAll
-    void init(@Autowired PlayerService playerService, @Autowired PlayerRepository playerRepository) {
+    void init(@Autowired PlayerService playerService,
+              @Autowired PlayerRepository playerRepository) {
+        saveTestsData(playerRepository);
+        players = playerService.findAll();
+    }
+
+    private void saveTestsData(PlayerRepository playerRepository) {
         newPlayers.add(Player.builder()
                 .id(new ObjectId())
                 .surname("Abdel-Aziz")
@@ -77,7 +83,6 @@ public class PlayerControllerTests {
                 .nationalities(List.of("Cuban", "Polish"))
                 .build());
         playerRepository.saveAll(newPlayers);
-        players = playerService.findAll();
     }
 
     @Test
@@ -100,7 +105,8 @@ public class PlayerControllerTests {
         String clubName = "Modena Volley";
         String expectedJson = "[" + converter.convert(players.get(2)) + ',' +
                 converter.convert(players.get(0)) + ']';
-        mockMvc.perform(get("/{clubName}/players", clubName))
+        mockMvc.perform(get("/players")
+                        .param("club", clubName))
                 .andExpect(status().isOk())
                 .andExpect(content().json(expectedJson));
     }
@@ -110,7 +116,7 @@ public class PlayerControllerTests {
     void checkFindPlayerById() throws Exception {
         String searchedId = players.get(1).getId();
         String expectedJson = converter.convert(players.get(1));
-        mockMvc.perform(get("/player/{id}", searchedId))
+        mockMvc.perform(get("/player/{playerId}", searchedId))
                 .andExpect(status().isOk())
                 .andExpect(content().json(expectedJson));
     }
@@ -119,8 +125,8 @@ public class PlayerControllerTests {
     @DisplayName("Player has not been founded by id")
     void checkNotFoundPlayerById() throws Exception {
         ObjectId searchedId = new ObjectId();
-        mockMvc.perform(get("/player/{id}", searchedId.toString()))
-                .andExpect(status().is5xxServerError());
+        mockMvc.perform(get("/player/{playerId}", searchedId.toString()))
+                .andExpect(status().isNotFound());
     }
 
     @AfterAll

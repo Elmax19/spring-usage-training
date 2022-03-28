@@ -81,39 +81,36 @@ public class PlayerServiceTest {
 
         playerDtos.add(PlayerDto.builder()
                 .id(players.get(0).getId().toString())
-                .surname("Abdel-Aziz")
-                .name("Nimir")
+                .fullName("Nimir Abdel-Aziz")
                 .age(30)
                 .height(2.01)
                 .spike(360)
                 .block(340)
                 .position(Position.OPPOSITE_HITTER)
-                .currentClub("Modena Volley")
+                .club("Modena Volley")
                 .number(14)
                 .build());
         playerDtos.add(PlayerDto.builder()
                 .id(players.get(1).getId().toString())
-                .surname("Mikhaylov")
-                .name("Maxim")
+                .fullName("Maxim Mikhaylov")
                 .age(33)
                 .height(2.02)
                 .spike(360)
                 .block(340)
                 .position(Position.OPPOSITE_HITTER)
-                .currentClub("Zenit Kazan")
+                .club("Zenit Kazan")
                 .number(18)
                 .nationalities(List.of("Russian"))
                 .build());
         playerDtos.add(PlayerDto.builder()
                 .id(players.get(2).getId().toString())
-                .surname("Wilfredo")
-                .name("Leon")
+                .fullName("Leon Wilfredo")
                 .age(28)
                 .height(2.02)
                 .spike(380)
                 .block(346)
                 .position(Position.OUTSIDE_HITTER)
-                .currentClub("Modena Volley")
+                .club("Modena Volley")
                 .number(9)
                 .nationalities(List.of("Cuban", "Polish"))
                 .build());
@@ -126,7 +123,7 @@ public class PlayerServiceTest {
         when(playerRepository.findById(id)).thenReturn(Optional.of(players.get(1)));
         when(playerMapper.convertToDto(players.get(1))).thenReturn(playerDtos.get(1));
 
-        PlayerDto actual = playerService.findById(id);
+        PlayerDto actual = playerService.findById(id.toString());
 
         assertEquals(playerDtos.get(1), actual);
     }
@@ -137,7 +134,7 @@ public class PlayerServiceTest {
         ObjectId id = new ObjectId();
         when(playerRepository.findById(id)).thenReturn(Optional.empty());
 
-        assertThrows(NoEntityWithSuchId.class, () -> playerService.findById(id));
+        assertThrows(NoEntityWithSuchId.class, () -> playerService.findById(id.toString()));
     }
 
     @Test
