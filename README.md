@@ -1,23 +1,21 @@
-## MongoDB spring-data-starter
+## Players API
 
-Spring Data’s mission is to provide a familiar and consistent, Spring-based programming model for data access while
-still retaining the special traits of the underlying data store.
+Starter of Spring web uses Spring MVC, REST and Tomcat as a default embedded server. The single spring-boot-starter-web
+dependency transitively pulls in all dependencies related to web development. It also reduces the build dependency
+count.
 
-It makes it easy to use data access technologies, relational and non-relational databases, map-reduce frameworks, and
-cloud-based data services. This is an umbrella project which contains many subprojects that are specific to a given
-database. The projects are developed by working together with many of the companies and developers that are behind these
-exciting technologies.
+To test our Spring MVC controllers, we can use the **_WebMvcTest_** annotation. The annotation scans only beans for
+**_Controller_**, **_ControllerAdvice_**, and a few others related to the web layer.
 
-Spring Data for MongoDB is part of the umbrella Spring Data project which aims to provide a familiar and consistent
-Spring-based programming model for new datastores while retaining store-specific features and capabilities.
+Spring Boot also autoconfigures a **_MockMvc_** bean for us so that we can autowire that. Using **_MockMvc_** fakes HTTP
+requests for us, making it possible to run the controller tests without starting an entier HTTP server.
 
-The Spring Data MongoDB project provides integration with the MongoDB document database. Key functional areas of Spring
-Data MongoDB are a POJO centric model for interacting with a MongoDB DBCollection and easily writing a Repository style
-data access layer.
+Slicing or program slicing is a technique used in software testing which takes a slice or a group of program statements
+in the program for testing particular test conditions or cases that may affect a value at a particular point of
+interest.
 
 # Useful links:
 
-- https://spring.io/projects/spring-data
-- https://www.linkedin.com/pulse/get-started-spring-boot-mongodb-docker-compose-saeid-farahi
-- https://hellokoding.com/docker-compose-with-spring-boot-mongodb-nginx/#:~:text=spring.data.mongodb.host%20is%20a%20common%20property%20of%20Spring%20Boot,find%20below%20the%20docker-compose.yaml%20file%20for%20more%20details
-- https://www.appsdeveloperblog.com/deploying-spring-boot-mongodb-application-with-docker
+- https://tanzu.vmware.com/content/springone-platform-2017/test-driven-development-with-spring-boot-sannidhi-jalukar-madhura-bhave
+- https://reflectoring.io/spring-boot-web-controller-test
+- https://www.arhohuttunen.com/spring-boot-webmvctest
