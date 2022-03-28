@@ -4,7 +4,6 @@ import by.elmax19.app.model.Player;
 import by.elmax19.app.model.dto.PlayerDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
