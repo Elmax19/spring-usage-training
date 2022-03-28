@@ -1,10 +1,8 @@
 package by.elmax19.app.model.dto;
 
 import by.elmax19.app.model.Position;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import org.bson.types.ObjectId;
 
 import java.util.List;
 

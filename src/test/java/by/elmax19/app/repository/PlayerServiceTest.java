@@ -1,12 +1,12 @@
 package by.elmax19.app.repository;
 
 import by.elmax19.app.exception.NoEntityWithSuchId;
+import by.elmax19.app.mapper.PlayerMapper;
 import by.elmax19.app.model.Player;
 import by.elmax19.app.model.Position;
 import by.elmax19.app.model.dto.PlayerDto;
 import by.elmax19.app.service.PlayerService;
 import org.bson.types.ObjectId;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,6 +29,8 @@ import static org.mockito.Mockito.when;
 public class PlayerServiceTest {
     private final List<Player> players = new ArrayList<>();
     private final List<PlayerDto> playerDtos = new ArrayList<>();
+    @Mock
+    private PlayerMapper playerMapper;
     @Mock
     private PlayerRepository playerRepository;
     @InjectMocks
@@ -122,6 +124,7 @@ public class PlayerServiceTest {
     void checkFindById() {
         ObjectId id = players.get(1).getId();
         when(playerRepository.findById(id)).thenReturn(Optional.of(players.get(1)));
+        when(playerMapper.convertToDto(players.get(1))).thenReturn(playerDtos.get(1));
 
         PlayerDto actual = playerService.findById(id);
 
@@ -141,6 +144,7 @@ public class PlayerServiceTest {
     @DisplayName("All players have been founded")
     void checkFindAll() {
         when(playerRepository.findAll()).thenReturn(players);
+        when(playerMapper.convertListToDto(players)).thenReturn(playerDtos);
 
         List<PlayerDto> actual = playerService.findAll();
 
@@ -152,12 +156,15 @@ public class PlayerServiceTest {
     @DisplayName("All \"Modena Volley\" players have been founded")
     void checkFindByClub() {
         String clubName = "Modena Volley";
+        List<Player> searchedPlayers = Arrays.asList(players.get(2), players.get(0));
         when(playerRepository.findPlayersByCurrentClubOrderByNumber(clubName))
-                .thenReturn(Arrays.asList(players.get(2), players.get(0)));
+                .thenReturn(searchedPlayers);
+        when(playerMapper.convertListToDto(searchedPlayers))
+                .thenReturn(Arrays.asList(playerDtos.get(2), playerDtos.get(0)));
 
         List<PlayerDto> actual = playerService.findByClub(clubName);
 
-        assertEquals(actual.size(), playerDtos.size());
+        assertEquals(searchedPlayers.size(), actual.size());
         assertTrue(playerDtos.containsAll(actual));
     }
 }
