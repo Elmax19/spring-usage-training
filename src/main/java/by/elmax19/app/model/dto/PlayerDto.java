@@ -2,15 +2,16 @@ package by.elmax19.app.model.dto;
 
 import by.elmax19.app.model.Position;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import org.bson.types.ObjectId;
 
 import java.util.List;
 
+@Builder
 @Getter
-@AllArgsConstructor
 public class PlayerDto {
-    private ObjectId id;
+    private String id;
     private String surname;
     private String name;
     private Integer age;

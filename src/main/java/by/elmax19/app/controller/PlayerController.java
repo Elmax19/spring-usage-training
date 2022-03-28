@@ -26,7 +26,7 @@ public class PlayerController {
     }
 
     @GetMapping("/player/{id}")
-    PlayerDto findPlayerById(@PathVariable ObjectId id) {
-        return playerService.findById(id);
+    PlayerDto findPlayerById(@PathVariable String id) {
+        return playerService.findById(new ObjectId(id));
     }
 }

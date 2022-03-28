@@ -1,7 +1,6 @@
-package by.elmax19.app;
+package by.elmax19.app.repository;
 
 import by.elmax19.app.model.Player;
-import by.elmax19.app.repository.PlayerRepository;
 import org.jeasy.random.EasyRandom;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.DisplayName;
@@ -18,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataMongoTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class PlayerIntegrationTests {
+public class PlayerRepoTests {
     @Autowired
     private PlayerRepository playerRepo;
 
