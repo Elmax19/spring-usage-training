@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Component
 @Mapper
 public interface PlayerMapper {
     @Mapping(target = "id", expression = "java(player.getId().toString())")
