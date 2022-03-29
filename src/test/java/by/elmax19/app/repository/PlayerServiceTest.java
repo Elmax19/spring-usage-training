@@ -1,11 +1,11 @@
 package by.elmax19.app.repository;
 
-import by.elmax19.app.exception.NoEntityWithSuchId;
+import by.elmax19.app.exception.PlayerNotFoundException;
 import by.elmax19.app.mapper.PlayerMapper;
 import by.elmax19.app.model.Player;
 import by.elmax19.app.model.Position;
 import by.elmax19.app.model.dto.PlayerDto;
-import by.elmax19.app.service.PlayerService;
+import by.elmax19.app.service.impl.PlayerServiceImpl;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Example;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -34,9 +35,65 @@ public class PlayerServiceTest {
     @Mock
     private PlayerRepository playerRepository;
     @InjectMocks
-    private PlayerService playerService;
+    private PlayerServiceImpl playerService;
 
     public PlayerServiceTest() {
+        initPlayersList();
+        initPlayerDtosList();
+    }
+
+    @Test
+    @DisplayName("Player has been founded by id")
+    void checkFindById() {
+        ObjectId id = players.get(1).getId();
+        when(playerRepository.findById(id)).thenReturn(Optional.of(players.get(1)));
+        when(playerMapper.convertToDto(players.get(1))).thenReturn(playerDtos.get(1));
+
+        PlayerDto actual = playerService.findById(id.toString());
+
+        assertEquals(playerDtos.get(1), actual);
+    }
+
+    @Test
+    @DisplayName("Exception thrown when no Player with such id")
+    void checkExceptionFindById() {
+        ObjectId id = new ObjectId();
+        when(playerRepository.findById(id)).thenReturn(Optional.empty());
+
+        assertThrows(PlayerNotFoundException.class, () -> playerService.findById(id.toString()));
+    }
+
+    @Test
+    @DisplayName("All players have been founded")
+    void checkFindAll() {
+        Player player = Player.builder().build();
+        when(playerRepository.findAll(Example.of(player))).thenReturn(players);
+        when(playerMapper.convertListToDto(players)).thenReturn(playerDtos);
+
+        List<PlayerDto> actual = playerService.findAll(Example.of(player));
+
+        assertEquals(actual.size(), playerDtos.size());
+        assertTrue(playerDtos.containsAll(actual));
+    }
+
+    @Test
+    @DisplayName("All \"Modena Volley\" players have been founded")
+    void checkFindByClub() {
+        String clubName = "Modena Volley";
+        Player player = Player.builder().currentClub(clubName).build();
+        List<Player> searchedPlayers = Arrays.asList(players.get(2), players.get(0));
+        when(playerRepository.findAll(Example.of(player)))
+                .thenReturn(searchedPlayers);
+        when(playerMapper.convertListToDto(searchedPlayers))
+                .thenReturn(Arrays.asList(playerDtos.get(2), playerDtos.get(0)));
+
+        List<PlayerDto> actual = playerService.findAll(Example.of(player));
+
+        assertEquals(searchedPlayers.size(), actual.size());
+        assertTrue(playerDtos.containsAll(actual));
+    }
+
+    private void initPlayersList() {
         players.add(Player.builder()
                 .id(new ObjectId())
                 .surname("Abdel-Aziz")
@@ -78,7 +135,9 @@ public class PlayerServiceTest {
                 .nationalities(List.of("Cuban", "Polish"))
                 .salary(BigDecimal.valueOf(1200))
                 .build());
+    }
 
+    private void initPlayerDtosList() {
         playerDtos.add(PlayerDto.builder()
                 .id(players.get(0).getId().toString())
                 .fullName("Nimir Abdel-Aziz")
@@ -114,54 +173,5 @@ public class PlayerServiceTest {
                 .number(9)
                 .nationalities(List.of("Cuban", "Polish"))
                 .build());
-    }
-
-    @Test
-    @DisplayName("Player has been founded by id")
-    void checkFindById() {
-        ObjectId id = players.get(1).getId();
-        when(playerRepository.findById(id)).thenReturn(Optional.of(players.get(1)));
-        when(playerMapper.convertToDto(players.get(1))).thenReturn(playerDtos.get(1));
-
-        PlayerDto actual = playerService.findById(id.toString());
-
-        assertEquals(playerDtos.get(1), actual);
-    }
-
-    @Test
-    @DisplayName("Exception thrown when no Player with such id")
-    void checkExceptionFindById() {
-        ObjectId id = new ObjectId();
-        when(playerRepository.findById(id)).thenReturn(Optional.empty());
-
-        assertThrows(NoEntityWithSuchId.class, () -> playerService.findById(id.toString()));
-    }
-
-    @Test
-    @DisplayName("All players have been founded")
-    void checkFindAll() {
-        when(playerRepository.findAll()).thenReturn(players);
-        when(playerMapper.convertListToDto(players)).thenReturn(playerDtos);
-
-        List<PlayerDto> actual = playerService.findAll();
-
-        assertEquals(actual.size(), playerDtos.size());
-        assertTrue(playerDtos.containsAll(actual));
-    }
-
-    @Test
-    @DisplayName("All \"Modena Volley\" players have been founded")
-    void checkFindByClub() {
-        String clubName = "Modena Volley";
-        List<Player> searchedPlayers = Arrays.asList(players.get(2), players.get(0));
-        when(playerRepository.findPlayersByCurrentClubOrderByNumber(clubName))
-                .thenReturn(searchedPlayers);
-        when(playerMapper.convertListToDto(searchedPlayers))
-                .thenReturn(Arrays.asList(playerDtos.get(2), playerDtos.get(0)));
-
-        List<PlayerDto> actual = playerService.findByClub(clubName);
-
-        assertEquals(searchedPlayers.size(), actual.size());
-        assertTrue(playerDtos.containsAll(actual));
     }
 }

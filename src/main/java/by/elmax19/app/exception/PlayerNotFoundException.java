@@ -1,7 +1,7 @@
 package by.elmax19.app.exception;
 
-public class NoEntityWithSuchId extends RuntimeException {
-    public NoEntityWithSuchId(String message) {
+public class PlayerNotFoundException extends RuntimeException {
+    public PlayerNotFoundException(String message) {
         super(message);
     }
 }

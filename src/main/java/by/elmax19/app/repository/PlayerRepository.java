@@ -2,14 +2,8 @@ package by.elmax19.app.repository;
 
 import by.elmax19.app.model.Player;
 import org.bson.types.ObjectId;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
-import java.util.List;
-
-public interface PlayerRepository extends CrudRepository<Player, ObjectId> {
-    List<Player> findAll();
-
+public interface PlayerRepository extends MongoRepository<Player, ObjectId> {
     Player findPlayerBySurnameAndName(String surname, String name);
-
-    List<Player> findPlayersByCurrentClubOrderByNumber(String currentClub);
 }
