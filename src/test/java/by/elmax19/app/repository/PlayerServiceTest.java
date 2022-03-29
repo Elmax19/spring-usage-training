@@ -4,6 +4,7 @@ import by.elmax19.app.exception.PlayerNotFoundException;
 import by.elmax19.app.mapper.PlayerMapper;
 import by.elmax19.app.model.Player;
 import by.elmax19.app.model.Position;
+import by.elmax19.app.model.dto.FindAllPlayerDto;
 import by.elmax19.app.model.dto.PlayerDto;
 import by.elmax19.app.service.impl.PlayerServiceImpl;
 import org.bson.types.ObjectId;
@@ -66,11 +67,12 @@ public class PlayerServiceTest {
     @Test
     @DisplayName("All players have been founded")
     void checkFindAll() {
+        FindAllPlayerDto playerDto = new FindAllPlayerDto();
         Player player = Player.builder().build();
         when(playerRepository.findAll(Example.of(player))).thenReturn(players);
         when(playerMapper.convertListToDto(players)).thenReturn(playerDtos);
 
-        List<PlayerDto> actual = playerService.findAll(Example.of(player));
+        List<PlayerDto> actual = playerService.findAll(playerDto);
 
         assertEquals(actual.size(), playerDtos.size());
         assertTrue(playerDtos.containsAll(actual));
@@ -80,6 +82,7 @@ public class PlayerServiceTest {
     @DisplayName("All \"Modena Volley\" players have been founded")
     void checkFindByClub() {
         String clubName = "Modena Volley";
+        FindAllPlayerDto playerDto = new FindAllPlayerDto(clubName);
         Player player = Player.builder().currentClub(clubName).build();
         List<Player> searchedPlayers = Arrays.asList(players.get(2), players.get(0));
         when(playerRepository.findAll(Example.of(player)))
@@ -87,7 +90,7 @@ public class PlayerServiceTest {
         when(playerMapper.convertListToDto(searchedPlayers))
                 .thenReturn(Arrays.asList(playerDtos.get(2), playerDtos.get(0)));
 
-        List<PlayerDto> actual = playerService.findAll(Example.of(player));
+        List<PlayerDto> actual = playerService.findAll(playerDto);
 
         assertEquals(searchedPlayers.size(), actual.size());
         assertTrue(playerDtos.containsAll(actual));

@@ -3,6 +3,7 @@ package by.elmax19.app.service.impl;
 import by.elmax19.app.exception.PlayerNotFoundException;
 import by.elmax19.app.mapper.PlayerMapper;
 import by.elmax19.app.model.Player;
+import by.elmax19.app.model.dto.FindAllPlayerDto;
 import by.elmax19.app.model.dto.PlayerDto;
 import by.elmax19.app.repository.PlayerRepository;
 import by.elmax19.app.service.PlayerService;
@@ -27,7 +28,10 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
-    public List<PlayerDto> findAll(Example<Player> player) {
-        return playerMapper.convertListToDto(playerRepository.findAll(player));
+    public List<PlayerDto> findAll(FindAllPlayerDto playerDto) {
+        Player player = Player.builder()
+                .currentClub(playerDto.getClub())
+                .build();
+        return playerMapper.convertListToDto(playerRepository.findAll(Example.of(player)));
     }
 }

@@ -1,11 +1,10 @@
 package by.elmax19.app.controller;
 
 import by.elmax19.app.exception.PlayerNotFoundException;
-import by.elmax19.app.model.Player;
+import by.elmax19.app.model.dto.FindAllPlayerDto;
 import by.elmax19.app.model.dto.PlayerDto;
 import by.elmax19.app.service.PlayerService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,10 +22,10 @@ public class PlayerController {
     private final PlayerService playerService;
 
     @GetMapping("/players")
-    public List<PlayerDto> findAllPlayersBuClub(@RequestParam Optional<String> club) {
-        Player player = Player.builder().build();
-        club.ifPresent(player::setCurrentClub);
-        return playerService.findAll(Example.of(player));
+    public List<PlayerDto> findAllPlayers(@RequestParam Optional<String> club) {
+        FindAllPlayerDto player = new FindAllPlayerDto();
+        club.ifPresent(player::setClub);
+        return playerService.findAll(player);
     }
 
     @GetMapping("/player/{playerId}")
