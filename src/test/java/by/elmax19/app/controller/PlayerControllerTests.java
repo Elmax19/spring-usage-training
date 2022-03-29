@@ -4,12 +4,12 @@ import by.elmax19.app.model.Player;
 import by.elmax19.app.model.Position;
 import by.elmax19.app.model.dto.PlayerDto;
 import by.elmax19.app.repository.PlayerRepository;
-import by.elmax19.app.util.ObjectToJsonConverter;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,26 +27,23 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class PlayerControllerTests {
-    private Player firstPlayer;
-    private Player secondPlayer;
-    private Player thirdPlayer;
-    private PlayerDto firstPlayerDto;
-    private PlayerDto secondPlayerDto;
-    private PlayerDto thirdPlayerDto;
-    @Autowired
-    private ObjectToJsonConverter converter;
+    private static Player firstPlayer;
+    private static Player secondPlayer;
+    private static Player thirdPlayer;
+    private static PlayerDto firstPlayerDto;
+    private static PlayerDto secondPlayerDto;
+    private static PlayerDto thirdPlayerDto;
     @Autowired
     private MockMvc mockMvc;
 
     @BeforeAll
-    public void init(@Autowired PlayerRepository playerRepository) {
+    public static void init(@Autowired PlayerRepository playerRepository) {
         initPlayersData();
         saveTestsData(playerRepository);
     }
 
-    private void initPlayersData() {
+    private static void initPlayersData() {
         firstPlayer = Player.builder()
                 .id(new ObjectId())
                 .surname("Abdel-Aziz")
@@ -130,41 +127,53 @@ public class PlayerControllerTests {
     @Test
     @DisplayName("All players have been founded")
     void checkFindAllPlayers() throws Exception {
-        String expected = "[" + converter.convert(firstPlayerDto) + ',' +
-                converter.convert(secondPlayerDto) + ',' +
-                converter.convert(thirdPlayerDto) + ']';
-
         MvcResult mvcResult = mockMvc.perform(get("/players"))
                 .andExpect(status().isOk())
                 .andReturn();
+        List<PlayerDto> actualPlayers = new ObjectMapper().readValue(
+                mvcResult.getResponse().getContentAsString(), new TypeReference<>() {
+                });
 
-        String actual = mvcResult.getResponse().getContentAsString();
-        assertEquals(expected, actual);
+        assertEquals(3, actualPlayers.size());
+        assertEquals(firstPlayerDto, actualPlayers.get(0));
+        assertEquals(secondPlayerDto, actualPlayers.get(1));
+        assertEquals(thirdPlayerDto, actualPlayers.get(2));
     }
 
     @Test
     @DisplayName("Players have been founded by club name")
     void checkFindPlayersByClub() throws Exception {
         String clubName = "Modena Volley";
-        String expected = "[" + converter.convert(firstPlayerDto) + ',' +
-                converter.convert(thirdPlayerDto) + ']';
 
         MvcResult mvcResult = mockMvc.perform(get("/players")
                         .param("club", clubName))
                 .andExpect(status().isOk())
                 .andReturn();
+        List<PlayerDto> actualPlayers = new ObjectMapper().readValue(
+                mvcResult.getResponse().getContentAsString(), new TypeReference<>() {
+                });
 
-        String actual = mvcResult.getResponse().getContentAsString();
-        assertEquals(expected, actual);
+        assertEquals(2, actualPlayers.size());
+        assertEquals(firstPlayerDto, actualPlayers.get(0));
+        assertEquals(thirdPlayerDto, actualPlayers.get(1));
     }
 
     @Test
     @DisplayName("Player has been founded by id")
     void checkFindPlayerById() throws Exception {
-        String searchedId = firstPlayerDto.getId().toString();
+        String searchedId = firstPlayerDto.getId();
         mockMvc.perform(get("/player/{playerId}", searchedId))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(searchedId)));
+                .andExpect(jsonPath("$.id", is(searchedId)))
+                .andExpect(jsonPath("$.fullName", is(firstPlayer.getName() + ' ' + firstPlayer.getSurname())))
+                .andExpect(jsonPath("$.age", is(firstPlayer.getAge())))
+                .andExpect(jsonPath("$.height", is(firstPlayer.getHeight())))
+                .andExpect(jsonPath("$.spike", is(firstPlayer.getSpike())))
+                .andExpect(jsonPath("$.block", is(firstPlayer.getBlock())))
+                .andExpect(jsonPath("$.position", is(firstPlayer.getPosition().name())))
+                .andExpect(jsonPath("$.club", is(firstPlayer.getCurrentClub())))
+                .andExpect(jsonPath("$.number", is(firstPlayer.getNumber())))
+                .andExpect(jsonPath("$.nationalities", is(firstPlayer.getNationalities())));
     }
 
     @Test
@@ -175,7 +184,7 @@ public class PlayerControllerTests {
                 .andExpect(status().isNotFound());
     }
 
-    private void saveTestsData(PlayerRepository playerRepository) {
+    private static void saveTestsData(PlayerRepository playerRepository) {
         playerRepository.save(firstPlayer);
         playerRepository.save(secondPlayer);
         playerRepository.save(thirdPlayer);
