@@ -29,8 +29,6 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class PlayerServiceTest {
-    private final List<Player> players = new ArrayList<>();
-    private final List<PlayerDto> playerDtos = new ArrayList<>();
     @Mock
     private PlayerMapper playerMapper;
     @Mock
@@ -38,21 +36,39 @@ public class PlayerServiceTest {
     @InjectMocks
     private PlayerServiceImpl playerService;
 
-    public PlayerServiceTest() {
-        initPlayersList();
-        initPlayerDtosList();
-    }
-
     @Test
     @DisplayName("Player has been founded by id")
     void checkFindById() {
-        ObjectId id = players.get(1).getId();
-        when(playerRepository.findById(id)).thenReturn(Optional.of(players.get(1)));
-        when(playerMapper.convertToDto(players.get(1))).thenReturn(playerDtos.get(1));
+        Player player = Player.builder()
+                .id(new ObjectId())
+                .surname("Abdel-Aziz")
+                .name("Nimir")
+                .age(30)
+                .height(2.01)
+                .spike(360)
+                .block(340)
+                .position(Position.OPPOSITE_HITTER)
+                .currentClub("Modena Volley")
+                .number(14)
+                .salary(BigDecimal.valueOf(1500))
+                .build();
+        PlayerDto playerDto = PlayerDto.builder()
+                .id(player.getId().toString())
+                .fullName("Nimir Abdel-Aziz")
+                .age(30)
+                .height(2.01)
+                .spike(360)
+                .block(340)
+                .position("OPPOSITE_HITTER")
+                .club("Modena Volley")
+                .number(14)
+                .build();
+        when(playerRepository.findById(player.getId())).thenReturn(Optional.of(player));
+        when(playerMapper.convertToDto(player)).thenReturn(playerDto);
 
-        PlayerDto actual = playerService.findById(id.toString());
+        PlayerDto actual = playerService.findById(player.getId().toString());
 
-        assertEquals(playerDtos.get(1), actual);
+        assertEquals(playerDto, actual);
     }
 
     @Test
@@ -67,6 +83,8 @@ public class PlayerServiceTest {
     @Test
     @DisplayName("All players have been founded")
     void checkFindAll() {
+        List<Player> players = initPlayersList();
+        List<PlayerDto> playerDtos = initPlayerDtosList(players);
         FindAllPlayerDto playerDto = new FindAllPlayerDto();
         Player player = Player.builder().build();
         when(playerRepository.findAll(Example.of(player))).thenReturn(players);
@@ -82,6 +100,8 @@ public class PlayerServiceTest {
     @DisplayName("All \"Modena Volley\" players have been founded")
     void checkFindByClub() {
         String clubName = "Modena Volley";
+        List<Player> players = initPlayersList();
+        List<PlayerDto> playerDtos = initPlayerDtosList(players);
         FindAllPlayerDto playerDto = new FindAllPlayerDto(clubName);
         Player player = Player.builder().currentClub(clubName).build();
         List<Player> searchedPlayers = Arrays.asList(players.get(2), players.get(0));
@@ -96,7 +116,8 @@ public class PlayerServiceTest {
         assertTrue(playerDtos.containsAll(actual));
     }
 
-    private void initPlayersList() {
+    private List<Player> initPlayersList() {
+        List<Player> players = new ArrayList<>();
         players.add(Player.builder()
                 .id(new ObjectId())
                 .surname("Abdel-Aziz")
@@ -138,9 +159,11 @@ public class PlayerServiceTest {
                 .nationalities(List.of("Cuban", "Polish"))
                 .salary(BigDecimal.valueOf(1200))
                 .build());
+        return players;
     }
 
-    private void initPlayerDtosList() {
+    private List<PlayerDto> initPlayerDtosList(List<Player> players) {
+        List<PlayerDto> playerDtos = new ArrayList<>();
         playerDtos.add(PlayerDto.builder()
                 .id(players.get(0).getId().toString())
                 .fullName("Nimir Abdel-Aziz")
@@ -176,5 +199,6 @@ public class PlayerServiceTest {
                 .number(9)
                 .nationalities(List.of("Cuban", "Polish"))
                 .build());
+        return playerDtos;
     }
 }
