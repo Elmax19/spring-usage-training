@@ -8,14 +8,14 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 import java.util.List;
 
 @Builder
 @Getter
 public class NewPlayerDto {
-    @NotNull(message = "Full name cannot be null")
-    @NotBlank
+    @NotBlank(message = "Full name cannot be empty")
     private String fullName;
 
     @NotNull(message = "Age cannot be null")
@@ -24,7 +24,7 @@ public class NewPlayerDto {
     private Integer age;
 
     @NotNull(message = "Height cannot be null")
-    @Min(value = 1, message = "Height should not be less than 1 meter")
+    @Positive(message = "Height should not be positive number")
     @Max(value = 3, message = "Height should not be greater than 3 meters")
     private Double height;
 
@@ -41,7 +41,7 @@ public class NewPlayerDto {
     @NotNull(message = "Name cannot be null")
     private String position;
 
-    @NotNull(message = "Name cannot be null")
+    @NotBlank(message = "Club name cannot be empty")
     private String club;
 
     @NotNull(message = "Name cannot be null")
@@ -50,9 +50,10 @@ public class NewPlayerDto {
     private Integer number;
 
     @NotNull(message = "Name cannot be null")
-    @NotEmpty
+    @NotEmpty(message = "Player should have at list 1 nationality")
     private List<String> nationalities;
 
-    @NotNull(message = "Name cannot be null")
+    @NotNull(message = "Salary cannot be null")
+    @Positive(message = "Salary value cannot be negative")
     private BigDecimal salary;
 }
