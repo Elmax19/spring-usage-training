@@ -1,5 +1,6 @@
 package by.elmax19.app.service;
 
+import by.elmax19.app.exception.PlayerExistsException;
 import by.elmax19.app.exception.PlayerNotFoundException;
 import by.elmax19.app.mapper.PlayerMapper;
 import by.elmax19.app.model.Player;
@@ -118,6 +119,90 @@ public class PlayerServiceTests {
         assertTrue(playerDtos.containsAll(actual));
     }
 
+    @Test
+    @DisplayName("Player has been created")
+    void checkPlayerCreation() {
+        NewPlayerDto newPlayerDto = NewPlayerDto.builder()
+                .fullName("Yuji Nishida")
+                .age(22)
+                .height(1.86)
+                .spike(350)
+                .block(335)
+                .position("OPPOSITE_HITTER")
+                .club("Volley Callipo")
+                .number(2)
+                .nationalities(List.of("Japanese"))
+                .salary(BigDecimal.valueOf(950))
+                .build();
+        Player player = Player.builder()
+                .id(new ObjectId())
+                .surname("Nishida")
+                .name("Yuji")
+                .age(22)
+                .height(1.86)
+                .spike(350)
+                .block(335)
+                .position(Position.OPPOSITE_HITTER)
+                .currentClub("Volley Callipo")
+                .number(2)
+                .nationalities(List.of("Japanese"))
+                .salary(BigDecimal.valueOf(950))
+                .build();
+        PlayerDto expected = PlayerDto.builder()
+                .id(player.getId().toString())
+                .fullName("Yuji Nishida")
+                .age(22)
+                .height(1.86)
+                .spike(350)
+                .block(335)
+                .position("OPPOSITE_HITTER")
+                .club("Volley Callipo")
+                .number(2)
+                .nationalities(List.of("Japanese"))
+                .build();
+        when(playerMapper.convertToEntity(newPlayerDto)).thenReturn(player);
+        when(playerMapper.convertToDto(player)).thenReturn(expected);
+        when(playerRepository.save(player)).thenReturn(player);
+
+        PlayerDto actual = playerService.create(newPlayerDto);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    @DisplayName("Exception thrown when no Player with such id")
+    void checkExceptionSaving() {
+        NewPlayerDto newPlayerDto = NewPlayerDto.builder()
+                .fullName("Yuji Nishida")
+                .age(22)
+                .height(1.86)
+                .spike(350)
+                .block(335)
+                .position("OPPOSITE_HITTER")
+                .club("Volley Callipo")
+                .number(2)
+                .nationalities(List.of("Japanese"))
+                .salary(BigDecimal.valueOf(950))
+                .build();
+        Player player = Player.builder()
+                .surname("Nishida")
+                .name("Yuji")
+                .age(22)
+                .height(1.86)
+                .spike(350)
+                .block(335)
+                .position(Position.OPPOSITE_HITTER)
+                .currentClub("Volley Callipo")
+                .number(2)
+                .nationalities(List.of("Japanese"))
+                .salary(BigDecimal.valueOf(950))
+                .build();
+        when(playerMapper.convertToEntity(newPlayerDto)).thenReturn(player);
+        when(playerRepository.findOne(Example.of(player))).thenReturn(Optional.of(player));
+
+        assertThrows(PlayerExistsException.class, () -> playerService.create(newPlayerDto));
+    }
+
     private List<Player> initPlayersList() {
         List<Player> players = new ArrayList<>();
         players.add(Player.builder()
@@ -202,13 +287,5 @@ public class PlayerServiceTests {
                 .nationalities(List.of("Cuban", "Polish"))
                 .build());
         return playerDtos;
-    }
-
-    @Test
-    @DisplayName("Player has been created")
-    void checkPlayerCreation() {
-        NewPlayerDto newPlayerDto = NewPlayerDto.builder()
-                
-                .build();
     }
 }

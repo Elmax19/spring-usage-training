@@ -1,5 +1,6 @@
 package by.elmax19.app.service.impl;
 
+import by.elmax19.app.exception.PlayerExistsException;
 import by.elmax19.app.exception.PlayerNotFoundException;
 import by.elmax19.app.mapper.PlayerMapper;
 import by.elmax19.app.model.Player;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +40,10 @@ public class PlayerServiceImpl implements PlayerService {
 
     public PlayerDto create(NewPlayerDto playerDto) {
         Player player = playerMapper.convertToEntity(playerDto);
+        Optional<Player> playerInDatabase = playerRepository.findOne(Example.of(player));
+        if (playerInDatabase.isPresent()) {
+            throw new PlayerExistsException("Such player is already exists.");
+        }
         return playerMapper.convertToDto(playerRepository.save(player));
     }
 }

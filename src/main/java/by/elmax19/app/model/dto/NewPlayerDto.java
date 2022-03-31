@@ -29,27 +29,26 @@ public class NewPlayerDto {
     private Double height;
 
     @NotNull(message = "Spike cannot be null")
-    @Min(value = 2, message = "Spike should not be less than 2 meter")
-    @Max(value = 4, message = "Spike should not be greater than 4 meters")
+    @Min(value = 243, message = "Spike should not be less than 2.43 meters")
+    @Max(value = 400, message = "Spike should not be greater than 4 meters")
     private Integer spike;
 
-    @NotNull(message = "Name cannot be null")
-    @Min(value = 2, message = "Block should not be less than 2 meter")
-    @Max(value = 4, message = "Block should not be greater than 4 meters")
+    @NotNull(message = "Block cannot be null")
+    @Min(value = 243, message = "Block should not be less than 2.43 meters")
+    @Max(value = 400, message = "Block should not be greater than 4 meters")
     private Integer block;
 
-    @NotNull(message = "Name cannot be null")
+    @NotBlank(message = "Position cannot be empty")
     private String position;
 
     @NotBlank(message = "Club name cannot be empty")
     private String club;
 
-    @NotNull(message = "Name cannot be null")
+    @NotNull(message = "Number cannot be null")
     @Min(value = 1, message = "Player number should not be less than 1")
     @Max(value = 12, message = "Player number should not be greater than 12")
     private Integer number;
 
-    @NotNull(message = "Name cannot be null")
     @NotEmpty(message = "Player should have at list 1 nationality")
     private List<String> nationalities;
 

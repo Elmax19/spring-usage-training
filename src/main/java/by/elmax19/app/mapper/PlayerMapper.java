@@ -17,7 +17,7 @@ public interface PlayerMapper {
 
     List<PlayerDto> convertListToDto(List<Player> players);
 
-    @Mapping(target = "id", expression = "java(new ObjectId())")
+    @Mapping(target = "id", ignore = true)
     @Mapping(target = "surname", expression = "java(newPlayer.getFullName().split(\" \")[1])")
     @Mapping(target = "name", expression = "java(newPlayer.getFullName().split(\" \")[0])")
     @Mapping(target = "currentClub", source = "newPlayer.club")
