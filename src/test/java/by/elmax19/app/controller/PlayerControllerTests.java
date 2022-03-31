@@ -85,33 +85,9 @@ public class PlayerControllerTests {
     @Test
     @DisplayName("Player has been founded by id")
     void checkFindPlayerById() throws Exception {
-        Player player = Player.builder()
-                .id(new ObjectId())
-                .surname("Abdel-Aziz")
-                .name("Nimir")
-                .age(30)
-                .height(2.01)
-                .spike(360)
-                .block(340)
-                .position(Position.OPPOSITE_HITTER)
-                .currentClub("Modena Volley")
-                .number(14)
-                .nationalities(List.of("French"))
-                .salary(BigDecimal.valueOf(1500))
-                .build();
+        Player player = createNimirPlayer();
         playerRepository.save(player);
-        PlayerDto playerDto = PlayerDto.builder()
-                .id(player.getId().toString())
-                .fullName("Nimir Abdel-Aziz")
-                .age(30)
-                .height(2.01)
-                .spike(360)
-                .block(340)
-                .position("OPPOSITE_HITTER")
-                .club("Modena Volley")
-                .number(14)
-                .nationalities(List.of("French"))
-                .build();
+        PlayerDto playerDto = createNimirPlayerDto(player.getId().toString());
 
         mockMvc.perform(get("/player/{playerId}", playerDto.getId()))
                 .andExpect(status().isOk())
@@ -167,18 +143,7 @@ public class PlayerControllerTests {
     @Test
     @DisplayName("Player numeric fields are less than min value")
     void checkPlayerMinValueValidation() throws Exception {
-        NewPlayerDto newPlayerDto = NewPlayerDto.builder()
-                .fullName("Yuji Nishida")
-                .age(10)
-                .height(0.0)
-                .spike(150)
-                .block(200)
-                .position("OPPOSITE_HITTER")
-                .club("Volley Callipo")
-                .number(0)
-                .nationalities(List.of())
-                .salary(BigDecimal.valueOf(-100))
-                .build();
+        NewPlayerDto newPlayerDto = createPlayerMinValuesValidation();
 
         MvcResult mvcResult = mockMvc.perform(post("/players")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -202,18 +167,7 @@ public class PlayerControllerTests {
     @Test
     @DisplayName("Player numeric fields are greater than max value")
     void checkPlayerMaxValueValidation() throws Exception {
-        NewPlayerDto newPlayerDto = NewPlayerDto.builder()
-                .fullName("Yuji Nishida")
-                .age(99)
-                .height(4.0)
-                .spike(530)
-                .block(520)
-                .position("OPPOSITE_HITTER")
-                .club("Volley Callipo")
-                .number(33)
-                .nationalities(List.of("Japanese"))
-                .salary(BigDecimal.valueOf(950))
-                .build();
+        NewPlayerDto newPlayerDto = createPlayerMaxValuesValidation();
 
         MvcResult mvcResult = mockMvc.perform(post("/players")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -235,18 +189,7 @@ public class PlayerControllerTests {
     @Test
     @DisplayName("Player String fields are not empty")
     void checkPlayerStringFieldsValidation() throws Exception {
-        NewPlayerDto newPlayerDto = NewPlayerDto.builder()
-                .fullName(" ")
-                .age(22)
-                .height(1.86)
-                .spike(350)
-                .block(335)
-                .position(" ")
-                .club(" ")
-                .number(2)
-                .nationalities(List.of("Japanese"))
-                .salary(BigDecimal.valueOf(950))
-                .build();
+        NewPlayerDto newPlayerDto = createPlayerEmptyStringsValidation();
 
         MvcResult mvcResult = mockMvc.perform(post("/players")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -371,5 +314,80 @@ public class PlayerControllerTests {
                 .message(message)
                 .build();
         assertTrue(errors.contains(expectedError));
+    }
+
+    private Player createNimirPlayer() {
+        return Player.builder()
+                .id(new ObjectId())
+                .surname("Abdel-Aziz")
+                .name("Nimir")
+                .age(30)
+                .height(2.01)
+                .spike(360)
+                .block(340)
+                .position(Position.OPPOSITE_HITTER)
+                .currentClub("Modena Volley")
+                .number(14)
+                .salary(BigDecimal.valueOf(1500))
+                .build();
+    }
+
+    private PlayerDto createNimirPlayerDto(String id) {
+        return PlayerDto.builder()
+                .id(id)
+                .fullName("Nimir Abdel-Aziz")
+                .age(30)
+                .height(2.01)
+                .spike(360)
+                .block(340)
+                .position("OPPOSITE_HITTER")
+                .club("Modena Volley")
+                .number(14)
+                .build();
+    }
+
+    private NewPlayerDto createPlayerMinValuesValidation() {
+        return NewPlayerDto.builder()
+                .fullName("Yuji Nishida")
+                .age(10)
+                .height(0.0)
+                .spike(150)
+                .block(200)
+                .position("OPPOSITE_HITTER")
+                .club("Volley Callipo")
+                .number(0)
+                .nationalities(List.of())
+                .salary(BigDecimal.valueOf(-100))
+                .build();
+    }
+
+    private NewPlayerDto createPlayerMaxValuesValidation() {
+        return NewPlayerDto.builder()
+                .fullName("Yuji Nishida")
+                .age(99)
+                .height(4.0)
+                .spike(530)
+                .block(520)
+                .position("OPPOSITE_HITTER")
+                .club("Volley Callipo")
+                .number(33)
+                .nationalities(List.of("Japanese"))
+                .salary(BigDecimal.valueOf(950))
+                .build();
+    }
+
+    private NewPlayerDto createPlayerEmptyStringsValidation() {
+        return NewPlayerDto.builder()
+                .fullName(" ")
+                .age(22)
+                .height(1.86)
+                .spike(350)
+                .block(335)
+                .position(" ")
+                .club(" ")
+                .number(2)
+                .nationalities(List.of("Japanese"))
+                .salary(BigDecimal.valueOf(950))
+                .build();
     }
 }

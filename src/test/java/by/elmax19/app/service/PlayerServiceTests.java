@@ -42,30 +42,8 @@ public class PlayerServiceTests {
     @Test
     @DisplayName("Player has been founded by id")
     void checkFindById() {
-        Player player = Player.builder()
-                .id(new ObjectId())
-                .surname("Abdel-Aziz")
-                .name("Nimir")
-                .age(30)
-                .height(2.01)
-                .spike(360)
-                .block(340)
-                .position(Position.OPPOSITE_HITTER)
-                .currentClub("Modena Volley")
-                .number(14)
-                .salary(BigDecimal.valueOf(1500))
-                .build();
-        PlayerDto playerDto = PlayerDto.builder()
-                .id(player.getId().toString())
-                .fullName("Nimir Abdel-Aziz")
-                .age(30)
-                .height(2.01)
-                .spike(360)
-                .block(340)
-                .position("OPPOSITE_HITTER")
-                .club("Modena Volley")
-                .number(14)
-                .build();
+        Player player = createNimirPlayer();
+        PlayerDto playerDto = createNimirPlayerDto(player.getId().toString());
         when(playerRepository.findById(player.getId())).thenReturn(Optional.of(player));
         when(playerMapper.convertToDto(player)).thenReturn(playerDto);
 
@@ -122,44 +100,9 @@ public class PlayerServiceTests {
     @Test
     @DisplayName("Player has been created")
     void checkPlayerCreation() {
-        NewPlayerDto newPlayerDto = NewPlayerDto.builder()
-                .fullName("Yuji Nishida")
-                .age(22)
-                .height(1.86)
-                .spike(350)
-                .block(335)
-                .position("OPPOSITE_HITTER")
-                .club("Volley Callipo")
-                .number(2)
-                .nationalities(List.of("Japanese"))
-                .salary(BigDecimal.valueOf(950))
-                .build();
-        Player player = Player.builder()
-                .id(new ObjectId())
-                .surname("Nishida")
-                .name("Yuji")
-                .age(22)
-                .height(1.86)
-                .spike(350)
-                .block(335)
-                .position(Position.OPPOSITE_HITTER)
-                .currentClub("Volley Callipo")
-                .number(2)
-                .nationalities(List.of("Japanese"))
-                .salary(BigDecimal.valueOf(950))
-                .build();
-        PlayerDto expected = PlayerDto.builder()
-                .id(player.getId().toString())
-                .fullName("Yuji Nishida")
-                .age(22)
-                .height(1.86)
-                .spike(350)
-                .block(335)
-                .position("OPPOSITE_HITTER")
-                .club("Volley Callipo")
-                .number(2)
-                .nationalities(List.of("Japanese"))
-                .build();
+        NewPlayerDto newPlayerDto = createNewPlayerDto();
+        Player player = createNishidaPlayer();
+        PlayerDto expected = createNishidePlayerDto(player.getId().toString());
         when(playerMapper.convertToEntity(newPlayerDto)).thenReturn(player);
         when(playerMapper.convertToDto(player)).thenReturn(expected);
         when(playerRepository.save(player)).thenReturn(player);
@@ -172,31 +115,8 @@ public class PlayerServiceTests {
     @Test
     @DisplayName("Exception thrown when no Player with such id")
     void checkExceptionSaving() {
-        NewPlayerDto newPlayerDto = NewPlayerDto.builder()
-                .fullName("Yuji Nishida")
-                .age(22)
-                .height(1.86)
-                .spike(350)
-                .block(335)
-                .position("OPPOSITE_HITTER")
-                .club("Volley Callipo")
-                .number(2)
-                .nationalities(List.of("Japanese"))
-                .salary(BigDecimal.valueOf(950))
-                .build();
-        Player player = Player.builder()
-                .surname("Nishida")
-                .name("Yuji")
-                .age(22)
-                .height(1.86)
-                .spike(350)
-                .block(335)
-                .position(Position.OPPOSITE_HITTER)
-                .currentClub("Volley Callipo")
-                .number(2)
-                .nationalities(List.of("Japanese"))
-                .salary(BigDecimal.valueOf(950))
-                .build();
+        NewPlayerDto newPlayerDto = createNewPlayerDto();
+        Player player = createNishidaPlayer();
         when(playerMapper.convertToEntity(newPlayerDto)).thenReturn(player);
         when(playerRepository.findOne(Example.of(player))).thenReturn(Optional.of(player));
 
@@ -287,5 +207,82 @@ public class PlayerServiceTests {
                 .nationalities(List.of("Cuban", "Polish"))
                 .build());
         return playerDtos;
+    }
+
+    private NewPlayerDto createNewPlayerDto() {
+        return NewPlayerDto.builder()
+                .fullName("Yuji Nishida")
+                .age(22)
+                .height(1.86)
+                .spike(350)
+                .block(335)
+                .position("OPPOSITE_HITTER")
+                .club("Volley Callipo")
+                .number(2)
+                .nationalities(List.of("Japanese"))
+                .salary(BigDecimal.valueOf(950))
+                .build();
+    }
+
+    private Player createNishidaPlayer() {
+        return Player.builder()
+                .id(new ObjectId())
+                .surname("Nishida")
+                .name("Yuji")
+                .age(22)
+                .height(1.86)
+                .spike(350)
+                .block(335)
+                .position(Position.OPPOSITE_HITTER)
+                .currentClub("Volley Callipo")
+                .number(2)
+                .nationalities(List.of("Japanese"))
+                .salary(BigDecimal.valueOf(950))
+                .build();
+    }
+
+    private PlayerDto createNishidePlayerDto(String id) {
+        return PlayerDto.builder()
+                .id(id)
+                .fullName("Yuji Nishida")
+                .age(22)
+                .height(1.86)
+                .spike(350)
+                .block(335)
+                .position("OPPOSITE_HITTER")
+                .club("Volley Callipo")
+                .number(2)
+                .nationalities(List.of("Japanese"))
+                .build();
+    }
+
+    private Player createNimirPlayer() {
+        return Player.builder()
+                .id(new ObjectId())
+                .surname("Abdel-Aziz")
+                .name("Nimir")
+                .age(30)
+                .height(2.01)
+                .spike(360)
+                .block(340)
+                .position(Position.OPPOSITE_HITTER)
+                .currentClub("Modena Volley")
+                .number(14)
+                .salary(BigDecimal.valueOf(1500))
+                .build();
+    }
+
+    private PlayerDto createNimirPlayerDto(String id) {
+        return PlayerDto.builder()
+                .id(id)
+                .fullName("Nimir Abdel-Aziz")
+                .age(30)
+                .height(2.01)
+                .spike(360)
+                .block(340)
+                .position("OPPOSITE_HITTER")
+                .club("Modena Volley")
+                .number(14)
+                .build();
     }
 }
