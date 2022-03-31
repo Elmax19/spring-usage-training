@@ -5,6 +5,7 @@ import by.elmax19.app.exception.PlayerNotFoundException;
 import by.elmax19.app.model.dto.FindAllPlayerDto;
 import by.elmax19.app.model.dto.NewPlayerDto;
 import by.elmax19.app.model.dto.PlayerDto;
+import by.elmax19.app.model.dto.ValidationErrorDto;
 import by.elmax19.app.service.PlayerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -63,9 +64,13 @@ public class PlayerController {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(BAD_REQUEST)
-    public List<String> methodArgumentNotValidException(MethodArgumentNotValidException e) {
+    public List<ValidationErrorDto> methodArgumentNotValidException(MethodArgumentNotValidException e) {
         BindingResult result = e.getBindingResult();
         List<FieldError> fieldErrors = result.getFieldErrors();
-        return fieldErrors.stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
+        return fieldErrors.stream().map(fieldError ->
+                ValidationErrorDto.builder()
+                        .field(fieldError.getField())
+                        .message(fieldError.getDefaultMessage())
+                .build()).toList();
     }
 }

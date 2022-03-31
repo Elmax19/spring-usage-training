@@ -4,11 +4,11 @@ import by.elmax19.app.model.Player;
 import by.elmax19.app.model.Position;
 import by.elmax19.app.model.dto.NewPlayerDto;
 import by.elmax19.app.model.dto.PlayerDto;
+import by.elmax19.app.model.dto.ValidationErrorDto;
 import by.elmax19.app.repository.PlayerRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.bson.types.ObjectId;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -57,6 +57,8 @@ public class PlayerControllerTests {
         comparePlayers(expectedPlayers.get(0), actualPlayers.get(0));
         comparePlayers(expectedPlayers.get(1), actualPlayers.get(1));
         comparePlayers(expectedPlayers.get(2), actualPlayers.get(2));
+
+        clearDatabaseData();
     }
 
     @Test
@@ -76,6 +78,8 @@ public class PlayerControllerTests {
         assertEquals(2, actualPlayers.size());
         comparePlayers(expectedPlayers.get(0), actualPlayers.get(0));
         comparePlayers(expectedPlayers.get(2), actualPlayers.get(1));
+
+        clearDatabaseData();
     }
 
     @Test
@@ -121,6 +125,8 @@ public class PlayerControllerTests {
                 .andExpect(jsonPath("$.club", is(player.getCurrentClub())))
                 .andExpect(jsonPath("$.number", is(player.getNumber())))
                 .andExpect(jsonPath("$.nationalities", is(player.getNationalities())));
+
+        clearDatabaseData();
     }
 
     @Test
@@ -141,21 +147,21 @@ public class PlayerControllerTests {
                         .content(new ObjectMapper().writeValueAsString(newPlayerDto)))
                 .andExpect(status().isBadRequest())
                 .andReturn();
-        List<String> errors = new ObjectMapper().readValue(
+        List<ValidationErrorDto> errors = new ObjectMapper().readValue(
                 mvcResult.getResponse().getContentAsString(), new TypeReference<>() {
                 });
 
         assertEquals(10, errors.size());
-        assertTrue(errors.contains("Full name cannot be empty"));
-        assertTrue(errors.contains("Age cannot be null"));
-        assertTrue(errors.contains("Height cannot be null"));
-        assertTrue(errors.contains("Spike cannot be null"));
-        assertTrue(errors.contains("Block cannot be null"));
-        assertTrue(errors.contains("Position cannot be empty"));
-        assertTrue(errors.contains("Club name cannot be empty"));
-        assertTrue(errors.contains("Number cannot be null"));
-        assertTrue(errors.contains("Player should have at list 1 nationality"));
-        assertTrue(errors.contains("Salary cannot be null"));
+        checkValidationError(errors, "fullName", "Full name cannot be empty");
+        checkValidationError(errors, "age", "Age cannot be null");
+        checkValidationError(errors, "height", "Height cannot be null");
+        checkValidationError(errors, "spike", "Spike cannot be null");
+        checkValidationError(errors, "block", "Block cannot be null");
+        checkValidationError(errors, "position", "Position cannot be empty");
+        checkValidationError(errors, "club", "Club name cannot be empty");
+        checkValidationError(errors, "number", "Number cannot be null");
+        checkValidationError(errors, "nationalities", "Player should have at list 1 nationality");
+        checkValidationError(errors, "salary", "Salary cannot be null");
     }
 
     @Test
@@ -179,18 +185,18 @@ public class PlayerControllerTests {
                         .content(new ObjectMapper().writeValueAsString(newPlayerDto)))
                 .andExpect(status().isBadRequest())
                 .andReturn();
-        List<String> errors = new ObjectMapper().readValue(
+        List<ValidationErrorDto> errors = new ObjectMapper().readValue(
                 mvcResult.getResponse().getContentAsString(), new TypeReference<>() {
                 });
 
         assertEquals(7, errors.size());
-        assertTrue(errors.contains("Age should not be less than 16"));
-        assertTrue(errors.contains("Height should not be positive number"));
-        assertTrue(errors.contains("Spike should not be less than 2.43 meters"));
-        assertTrue(errors.contains("Block should not be less than 2.43 meters"));
-        assertTrue(errors.contains("Player number should not be less than 1"));
-        assertTrue(errors.contains("Player should have at list 1 nationality"));
-        assertTrue(errors.contains("Salary value cannot be negative"));
+        checkValidationError(errors, "age", "Age should not be less than 16");
+        checkValidationError(errors, "height", "Height should not be positive number");
+        checkValidationError(errors, "spike", "Spike should not be less than 2.43 meters");
+        checkValidationError(errors, "block", "Block should not be less than 2.43 meters");
+        checkValidationError(errors, "number", "Player number should not be less than 1");
+        checkValidationError(errors, "nationalities", "Player should have at list 1 nationality");
+        checkValidationError(errors, "salary", "Salary value cannot be negative");
     }
 
     @Test
@@ -214,16 +220,16 @@ public class PlayerControllerTests {
                         .content(new ObjectMapper().writeValueAsString(newPlayerDto)))
                 .andExpect(status().isBadRequest())
                 .andReturn();
-        List<String> errors = new ObjectMapper().readValue(
+        List<ValidationErrorDto> errors = new ObjectMapper().readValue(
                 mvcResult.getResponse().getContentAsString(), new TypeReference<>() {
                 });
 
         assertEquals(5, errors.size());
-        assertTrue(errors.contains("Age should not be greater than 60"));
-        assertTrue(errors.contains("Height should not be greater than 3 meters"));
-        assertTrue(errors.contains("Spike should not be greater than 4 meters"));
-        assertTrue(errors.contains("Block should not be greater than 4 meters"));
-        assertTrue(errors.contains("Player number should not be greater than 12"));
+        checkValidationError(errors, "age", "Age should not be greater than 60");
+        checkValidationError(errors, "height", "Height should not be greater than 3 meters");
+        checkValidationError(errors, "spike", "Spike should not be greater than 4 meters");
+        checkValidationError(errors, "block", "Block should not be greater than 4 meters");
+        checkValidationError(errors, "number", "Player number should not be greater than 12");
     }
 
     @Test
@@ -247,18 +253,17 @@ public class PlayerControllerTests {
                         .content(new ObjectMapper().writeValueAsString(newPlayerDto)))
                 .andExpect(status().isBadRequest())
                 .andReturn();
-        List<String> errors = new ObjectMapper().readValue(
+        List<ValidationErrorDto> errors = new ObjectMapper().readValue(
                 mvcResult.getResponse().getContentAsString(), new TypeReference<>() {
                 });
 
         assertEquals(3, errors.size());
-        assertTrue(errors.contains("Full name cannot be empty"));
-        assertTrue(errors.contains("Position cannot be empty"));
-        assertTrue(errors.contains("Club name cannot be empty"));
+        checkValidationError(errors, "fullName", "Full name cannot be empty");
+        checkValidationError(errors, "position", "Position cannot be empty");
+        checkValidationError(errors, "club", "Club name cannot be empty");
     }
 
-    @AfterEach
-    void clearDatabaseData(@Autowired PlayerRepository playerRepository) {
+    void clearDatabaseData() {
         playerRepository.deleteAll();
     }
 
@@ -358,5 +363,13 @@ public class PlayerControllerTests {
                 .nationalities(List.of("Cuban", "Polish"))
                 .build());
         return playerDtos;
+    }
+
+    private void checkValidationError(List<ValidationErrorDto> errors, String field, String message) {
+        ValidationErrorDto expectedError = ValidationErrorDto.builder()
+                .field(field)
+                .message(message)
+                .build();
+        assertTrue(errors.contains(expectedError));
     }
 }

@@ -26,4 +26,3 @@ they are intended to validate, instead of creating validation rules in separate 
 - https://reflectoring.io/spring-boot-web-controller-test
 - https://www.arhohuttunen.com/spring-boot-webmvctest
 - https://www.baeldung.com/javax-validation
-- 
