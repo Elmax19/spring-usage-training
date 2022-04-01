@@ -6,6 +6,7 @@ import by.elmax19.app.model.dto.NewPlayerDto;
 import by.elmax19.app.model.dto.PlayerDto;
 import by.elmax19.app.model.dto.ValidationErrorDto;
 import by.elmax19.app.repository.PlayerRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.bson.types.ObjectId;
@@ -114,6 +115,28 @@ public class PlayerControllerTests {
     }
 
     @Test
+    @DisplayName("Player has been created")
+    void checkPlayerCreation() throws Exception {
+        NewPlayerDto newPlayerDto = createCorrectNewPlayer();
+
+        mockMvc.perform(post("/players")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(newPlayerDto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.fullName", is(newPlayerDto.getName() + ' ' + newPlayerDto.getSurname())))
+                .andExpect(jsonPath("$.age", is(newPlayerDto.getAge())))
+                .andExpect(jsonPath("$.height", is(newPlayerDto.getHeight())))
+                .andExpect(jsonPath("$.spike", is(newPlayerDto.getSpike())))
+                .andExpect(jsonPath("$.block", is(newPlayerDto.getBlock())))
+                .andExpect(jsonPath("$.position", is(newPlayerDto.getPosition())))
+                .andExpect(jsonPath("$.club", is(newPlayerDto.getClub())))
+                .andExpect(jsonPath("$.number", is(newPlayerDto.getNumber())))
+                .andExpect(jsonPath("$.nationalities", is(newPlayerDto.getNationalities())));
+
+        clearDatabaseData();
+    }
+
+    @Test
     @DisplayName("Player not null fields are not valid")
     void checkPlayerNotNullValidation() throws Exception {
         NewPlayerDto newPlayerDto = NewPlayerDto.builder().build();
@@ -127,8 +150,9 @@ public class PlayerControllerTests {
                 mvcResult.getResponse().getContentAsString(), new TypeReference<>() {
                 });
 
-        assertEquals(10, errors.size());
-        checkValidationError(errors, "fullName", "Full name cannot be empty");
+        assertEquals(11, errors.size());
+        checkValidationError(errors, "surname", "Surname cannot be empty");
+        checkValidationError(errors, "name", "Name cannot be empty");
         checkValidationError(errors, "age", "Age cannot be null");
         checkValidationError(errors, "height", "Height cannot be null");
         checkValidationError(errors, "spike", "Spike cannot be null");
@@ -200,8 +224,9 @@ public class PlayerControllerTests {
                 mvcResult.getResponse().getContentAsString(), new TypeReference<>() {
                 });
 
-        assertEquals(3, errors.size());
-        checkValidationError(errors, "fullName", "Full name cannot be empty");
+        assertEquals(4, errors.size());
+        checkValidationError(errors, "surname", "Surname cannot be empty");
+        checkValidationError(errors, "name", "Name cannot be empty");
         checkValidationError(errors, "position", "Position cannot be empty");
         checkValidationError(errors, "club", "Club name cannot be empty");
     }
@@ -346,9 +371,26 @@ public class PlayerControllerTests {
                 .build();
     }
 
+    private NewPlayerDto createCorrectNewPlayer() {
+        return NewPlayerDto.builder()
+                .surname("Nishida")
+                .name("Yuji")
+                .age(22)
+                .height(1.86)
+                .spike(350)
+                .block(335)
+                .position("OPPOSITE_HITTER")
+                .club("Volley Callipo")
+                .number(2)
+                .nationalities(List.of("Japanese"))
+                .salary(BigDecimal.valueOf(950))
+                .build();
+    }
+
     private NewPlayerDto createPlayerMinValuesValidation() {
         return NewPlayerDto.builder()
-                .fullName("Yuji Nishida")
+                .surname("Nishida")
+                .name("Yuji")
                 .age(10)
                 .height(0.0)
                 .spike(150)
@@ -363,7 +405,8 @@ public class PlayerControllerTests {
 
     private NewPlayerDto createPlayerMaxValuesValidation() {
         return NewPlayerDto.builder()
-                .fullName("Yuji Nishida")
+                .surname("Nishida")
+                .name("Yuji")
                 .age(99)
                 .height(4.0)
                 .spike(530)
@@ -378,7 +421,8 @@ public class PlayerControllerTests {
 
     private NewPlayerDto createPlayerEmptyStringsValidation() {
         return NewPlayerDto.builder()
-                .fullName(" ")
+                .surname(" ")
+                .name(" ")
                 .age(22)
                 .height(1.86)
                 .spike(350)

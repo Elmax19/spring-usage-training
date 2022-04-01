@@ -15,8 +15,11 @@ import java.util.List;
 @Builder
 @Getter
 public class NewPlayerDto {
-    @NotBlank(message = "Full name cannot be empty")
-    private String fullName;
+    @NotBlank(message = "Surname cannot be empty")
+    private String surname;
+
+    @NotBlank(message = "Name cannot be empty")
+    private String name;
 
     @NotNull(message = "Age cannot be null")
     @Min(value = 16, message = "Age should not be less than 16")

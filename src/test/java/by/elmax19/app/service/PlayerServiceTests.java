@@ -28,6 +28,10 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -110,6 +114,7 @@ public class PlayerServiceTests {
         PlayerDto actual = playerService.create(newPlayerDto);
 
         assertEquals(expected, actual);
+        verify(playerRepository).save(player);
     }
 
     @Test
@@ -121,6 +126,7 @@ public class PlayerServiceTests {
         when(playerRepository.findOne(Example.of(player))).thenReturn(Optional.of(player));
 
         assertThrows(PlayerExistsException.class, () -> playerService.create(newPlayerDto));
+        verifyNoMoreInteractions(playerRepository);
     }
 
     private List<Player> initPlayersList() {
@@ -211,7 +217,8 @@ public class PlayerServiceTests {
 
     private NewPlayerDto createNewPlayerDto() {
         return NewPlayerDto.builder()
-                .fullName("Yuji Nishida")
+                .surname("Nishida")
+                .name("Yuji")
                 .age(22)
                 .height(1.86)
                 .spike(350)
