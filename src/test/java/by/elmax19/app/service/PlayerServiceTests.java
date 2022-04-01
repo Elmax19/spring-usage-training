@@ -1,11 +1,14 @@
-package by.elmax19.app.repository;
+package by.elmax19.app.service;
 
+import by.elmax19.app.exception.PlayerExistsException;
 import by.elmax19.app.exception.PlayerNotFoundException;
 import by.elmax19.app.mapper.PlayerMapper;
 import by.elmax19.app.model.Player;
 import by.elmax19.app.model.Position;
 import by.elmax19.app.model.dto.FindAllPlayerDto;
+import by.elmax19.app.model.dto.NewPlayerDto;
 import by.elmax19.app.model.dto.PlayerDto;
+import by.elmax19.app.repository.PlayerRepository;
 import by.elmax19.app.service.impl.PlayerServiceImpl;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.DisplayName;
@@ -25,10 +28,14 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class PlayerServiceTest {
+public class PlayerServiceTests {
     @Mock
     private PlayerMapper playerMapper;
     @Mock
@@ -39,30 +46,8 @@ public class PlayerServiceTest {
     @Test
     @DisplayName("Player has been founded by id")
     void checkFindById() {
-        Player player = Player.builder()
-                .id(new ObjectId())
-                .surname("Abdel-Aziz")
-                .name("Nimir")
-                .age(30)
-                .height(2.01)
-                .spike(360)
-                .block(340)
-                .position(Position.OPPOSITE_HITTER)
-                .currentClub("Modena Volley")
-                .number(14)
-                .salary(BigDecimal.valueOf(1500))
-                .build();
-        PlayerDto playerDto = PlayerDto.builder()
-                .id(player.getId().toString())
-                .fullName("Nimir Abdel-Aziz")
-                .age(30)
-                .height(2.01)
-                .spike(360)
-                .block(340)
-                .position("OPPOSITE_HITTER")
-                .club("Modena Volley")
-                .number(14)
-                .build();
+        Player player = createNimirPlayer();
+        PlayerDto playerDto = createNimirPlayerDto(player.getId().toString());
         when(playerRepository.findById(player.getId())).thenReturn(Optional.of(player));
         when(playerMapper.convertToDto(player)).thenReturn(playerDto);
 
@@ -114,6 +99,34 @@ public class PlayerServiceTest {
 
         assertEquals(searchedPlayers.size(), actual.size());
         assertTrue(playerDtos.containsAll(actual));
+    }
+
+    @Test
+    @DisplayName("Player has been created")
+    void checkPlayerCreation() {
+        NewPlayerDto newPlayerDto = createNewPlayerDto();
+        Player player = createNishidaPlayer();
+        PlayerDto expected = createNishidePlayerDto(player.getId().toString());
+        when(playerMapper.convertToEntity(newPlayerDto)).thenReturn(player);
+        when(playerMapper.convertToDto(player)).thenReturn(expected);
+        when(playerRepository.save(player)).thenReturn(player);
+
+        PlayerDto actual = playerService.create(newPlayerDto);
+
+        assertEquals(expected, actual);
+        verify(playerRepository).save(player);
+    }
+
+    @Test
+    @DisplayName("Exception thrown when no Player with such id")
+    void checkExceptionSaving() {
+        NewPlayerDto newPlayerDto = createNewPlayerDto();
+        Player player = createNishidaPlayer();
+        when(playerMapper.convertToEntity(newPlayerDto)).thenReturn(player);
+        when(playerRepository.findOne(Example.of(player))).thenReturn(Optional.of(player));
+
+        assertThrows(PlayerExistsException.class, () -> playerService.create(newPlayerDto));
+        verifyNoMoreInteractions(playerRepository);
     }
 
     private List<Player> initPlayersList() {
@@ -200,5 +213,83 @@ public class PlayerServiceTest {
                 .nationalities(List.of("Cuban", "Polish"))
                 .build());
         return playerDtos;
+    }
+
+    private NewPlayerDto createNewPlayerDto() {
+        return NewPlayerDto.builder()
+                .surname("Nishida")
+                .name("Yuji")
+                .age(22)
+                .height(1.86)
+                .spike(350)
+                .block(335)
+                .position("OPPOSITE_HITTER")
+                .club("Volley Callipo")
+                .number(2)
+                .nationalities(List.of("Japanese"))
+                .salary(BigDecimal.valueOf(950))
+                .build();
+    }
+
+    private Player createNishidaPlayer() {
+        return Player.builder()
+                .id(new ObjectId())
+                .surname("Nishida")
+                .name("Yuji")
+                .age(22)
+                .height(1.86)
+                .spike(350)
+                .block(335)
+                .position(Position.OPPOSITE_HITTER)
+                .currentClub("Volley Callipo")
+                .number(2)
+                .nationalities(List.of("Japanese"))
+                .salary(BigDecimal.valueOf(950))
+                .build();
+    }
+
+    private PlayerDto createNishidePlayerDto(String id) {
+        return PlayerDto.builder()
+                .id(id)
+                .fullName("Yuji Nishida")
+                .age(22)
+                .height(1.86)
+                .spike(350)
+                .block(335)
+                .position("OPPOSITE_HITTER")
+                .club("Volley Callipo")
+                .number(2)
+                .nationalities(List.of("Japanese"))
+                .build();
+    }
+
+    private Player createNimirPlayer() {
+        return Player.builder()
+                .id(new ObjectId())
+                .surname("Abdel-Aziz")
+                .name("Nimir")
+                .age(30)
+                .height(2.01)
+                .spike(360)
+                .block(340)
+                .position(Position.OPPOSITE_HITTER)
+                .currentClub("Modena Volley")
+                .number(14)
+                .salary(BigDecimal.valueOf(1500))
+                .build();
+    }
+
+    private PlayerDto createNimirPlayerDto(String id) {
+        return PlayerDto.builder()
+                .id(id)
+                .fullName("Nimir Abdel-Aziz")
+                .age(30)
+                .height(2.01)
+                .spike(360)
+                .block(340)
+                .position("OPPOSITE_HITTER")
+                .club("Modena Volley")
+                .number(14)
+                .build();
     }
 }

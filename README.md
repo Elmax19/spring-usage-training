@@ -14,8 +14,15 @@ Slicing or program slicing is a technique used in software testing which takes a
 in the program for testing particular test conditions or cases that may affect a value at a particular point of
 interest.
 
+JSR-303 bean validation is an specification whose objective is to standardize the validation of Java beans through
+annotations. The objective of the JSR-303 standard is to use annotations directly in a Java bean class.
+
+JSR 303 specification allows the validation rules to be specified directly into the fields inside any Java class which
+they are intended to validate, instead of creating validation rules in separate classes.
+
 # Useful links:
 
 - https://tanzu.vmware.com/content/springone-platform-2017/test-driven-development-with-spring-boot-sannidhi-jalukar-madhura-bhave
 - https://reflectoring.io/spring-boot-web-controller-test
 - https://www.arhohuttunen.com/spring-boot-webmvctest
+- https://www.baeldung.com/javax-validation
