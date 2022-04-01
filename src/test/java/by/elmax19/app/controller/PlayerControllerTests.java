@@ -1,12 +1,12 @@
 package by.elmax19.app.controller;
 
+import by.elmax19.app.mapper.PlayerMapper;
 import by.elmax19.app.model.Player;
 import by.elmax19.app.model.Position;
 import by.elmax19.app.model.dto.NewPlayerDto;
 import by.elmax19.app.model.dto.PlayerDto;
 import by.elmax19.app.model.dto.ValidationErrorDto;
 import by.elmax19.app.repository.PlayerRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.bson.types.ObjectId;
@@ -16,6 +16,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Example;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -39,6 +40,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class PlayerControllerTests {
     @Autowired
     PlayerRepository playerRepository;
+    @Autowired
+    PlayerMapper playerMapper;
     @Autowired
     private MockMvc mockMvc;
 
@@ -119,7 +122,7 @@ public class PlayerControllerTests {
     void checkPlayerCreation() throws Exception {
         NewPlayerDto newPlayerDto = createCorrectNewPlayer();
 
-        mockMvc.perform(post("/players")
+        MvcResult mvcResult = mockMvc.perform(post("/players")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(newPlayerDto)))
                 .andExpect(status().isOk())
@@ -131,7 +134,14 @@ public class PlayerControllerTests {
                 .andExpect(jsonPath("$.position", is(newPlayerDto.getPosition())))
                 .andExpect(jsonPath("$.club", is(newPlayerDto.getClub())))
                 .andExpect(jsonPath("$.number", is(newPlayerDto.getNumber())))
-                .andExpect(jsonPath("$.nationalities", is(newPlayerDto.getNationalities())));
+                .andExpect(jsonPath("$.nationalities", is(newPlayerDto.getNationalities())))
+                .andReturn();
+        PlayerDto createdPlayerDto = new ObjectMapper().readValue(
+                mvcResult.getResponse().getContentAsString(), new TypeReference<>() {
+                });
+        Player createdPlayer = playerMapper.convertToEntity(createdPlayerDto);
+
+        assertTrue(playerRepository.findOne(Example.of(createdPlayer)).isPresent());
 
         clearDatabaseData();
     }
