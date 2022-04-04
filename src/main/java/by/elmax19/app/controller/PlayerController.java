@@ -45,7 +45,7 @@ public class PlayerController {
         return playerService.findById(playerId);
     }
 
-    @PostMapping("/players")
+    @PostMapping(UrlPatterns.PLAYERS)
     public PlayerDto createPlayer(@Valid @RequestBody NewPlayerDto newPlayer) {
         return playerService.create(newPlayer);
     }
