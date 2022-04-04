@@ -33,19 +33,19 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class PlayerController {
     private final PlayerService playerService;
 
-    @GetMapping("/players")
+    @GetMapping(UrlPatterns.PLAYERS)
     public List<PlayerDto> findAllPlayers(@RequestParam Optional<String> club) {
         FindAllPlayerDto player = new FindAllPlayerDto();
         club.ifPresent(player::setClub);
         return playerService.findAll(player);
     }
 
-    @GetMapping("/player/{playerId}")
+    @GetMapping(UrlPatterns.SPECIFIC_PLAYER)
     public PlayerDto findPlayerById(@PathVariable String playerId) {
         return playerService.findById(playerId);
     }
 
-    @PostMapping("/players")
+    @PostMapping(UrlPatterns.PLAYERS)
     public PlayerDto createPlayer(@Valid @RequestBody NewPlayerDto newPlayer) {
         return playerService.create(newPlayer);
     }
